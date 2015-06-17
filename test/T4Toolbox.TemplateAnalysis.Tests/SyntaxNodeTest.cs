@@ -4,239 +4,208 @@
 
 namespace T4Toolbox.TemplateAnalysis
 {
-    using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
     using Microsoft.VisualStudio.Text;
+    using NSubstitute;
     using Xunit;
 
     public static class SyntaxNodeTest
     {
-        #region Equals
-
-        [Fact]
-        public static void EqualsReturnsTrueWhenKindAndSpanAreTheSame()
+        public static new class Equals
         {
-            var left = new TestableSyntaxNode(SyntaxKind.BlockEnd, new Span(4, 2));
-            var right = new TestableSyntaxNode(SyntaxKind.BlockEnd, new Span(4, 2));
-            Assert.True(left.Equals(right));
-        }
-
-        [Fact]
-        public static void EqualsReturnsFalseWhenKindIsDifferent()
-        {
-            var left = new TestableSyntaxNode(SyntaxKind.BlockEnd, new Span(4, 2));
-            var right = new TestableSyntaxNode(SyntaxKind.StatementBlockStart, new Span(4, 2));
-            Assert.False(left.Equals(right));            
-        }
-
-        [Fact]
-        public static void EqualsReturnsTrueWhenPositionIsSame()
-        {
-            var left = new TestableSyntaxNode(new Position(4, 2));
-            var right = new TestableSyntaxNode(new Position(4, 2));
-            Assert.True(left.Equals(right));
-        }
-
-        [Fact]
-        public static void EqualsReturnsFalseWhenPositionIsDifferent()
-        {
-            var left = new TestableSyntaxNode(new Position(4, 2));
-            var right = new TestableSyntaxNode(new Position(2, 4));
-            Assert.False(left.Equals(right));            
-        }
-
-        [Fact]
-        public static void EqualsReturnsFalseWhenSpanIsDifferent()
-        {
-            var left = new TestableSyntaxNode(SyntaxKind.BlockEnd, new Span(4, 2));
-            var right = new TestableSyntaxNode(SyntaxKind.BlockEnd, new Span(2, 4));
-            Assert.False(left.Equals(right));            
-        }
-
-        [Fact]
-        public static void EqualsReturnsTrueWhenChildNodesAreSame()
-        {
-            var left = new TestableSyntaxNode(
-                SyntaxKind.CodeBlock,
-                new TestableSyntaxNode(SyntaxKind.StatementBlockStart, new Span(0, 2)),
-                new TestableSyntaxNode(SyntaxKind.BlockEnd, new Span(2, 2)));
-            var right = new TestableSyntaxNode(
-                SyntaxKind.CodeBlock,
-                new TestableSyntaxNode(SyntaxKind.StatementBlockStart, new Span(0, 2)),
-                new TestableSyntaxNode(SyntaxKind.BlockEnd, new Span(2, 2)));
-            Assert.True(left.Equals(right));
-        }
-
-        [Fact]
-        public static void EqualsReturnsFalseWhenChildNodesAreDifferent()
-        {
-            var left = new TestableSyntaxNode(
-                SyntaxKind.CodeBlock,
-                new TestableSyntaxNode(SyntaxKind.ClassBlockStart, new Span(0, 3)),
-                new TestableSyntaxNode(SyntaxKind.BlockEnd, new Span(3, 2)));
-            var right = new TestableSyntaxNode(
-                SyntaxKind.CodeBlock,
-                new TestableSyntaxNode(SyntaxKind.ExpressionBlockStart, new Span(0, 3)),
-                new TestableSyntaxNode(SyntaxKind.BlockEnd, new Span(3, 2)));
-            Assert.False(left.Equals(right));
-        }
-
-        #endregion
-
-        #region GetHashCode
-
-        [Fact]
-        public static void GetHashCodeReturnsSameValuesForSamePositions()
-        {
-            var left = new TestableSyntaxNode(new Position(4, 2));
-            var right = new TestableSyntaxNode(new Position(4, 2));
-            Assert.Equal(left.GetHashCode(), right.GetHashCode());
-        }
-
-        [Fact]
-        public static void GetHashCodeReturnsDifferentValuesForDifferentPositions()
-        {
-            var left = new TestableSyntaxNode(new Position(4, 2));
-            var right = new TestableSyntaxNode(new Position(2, 4));
-            Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
-        }
-
-        #endregion
-
-        [Fact]
-        public static void GetTextReturnsSubstringOfTemplateBasedOnSpan()
-        {
-            var node = new TestableSyntaxNode(SyntaxKind.DirectiveName, new Span(4, 9));
-            Assert.Equal("directive", node.GetText("<#@ directive #>"));
-        }
-
-        #region TryGetDescription
-
-        [Fact]
-        public static void TryGetDescriptionReturnsEmptyDescriptionAndSpanGivenPositionOutsideOfItsSpan()
-        {
-            var target = new TestableSyntaxNode(SyntaxKind.Template, new Span(1, 1));
-            string description;
-            Span applicableTo;
-            Assert.False(target.TryGetDescription(2, out description, out applicableTo));
-            Assert.Equal(string.Empty, description);
-            Assert.Equal(default(Span), applicableTo);
-        }
-
-        [Fact]
-        public static void TryGetDescriptionReturnsEmptyDescriptionAndSpanWhenNodeHasNoDescriptionAttributeAndNoChildren()
-        {
-            var target = new TestableSyntaxNode(SyntaxKind.Template, new Span(0, 1));
-            string description;
-            Span applicableTo;
-            Assert.False(target.TryGetDescription(0, out description, out applicableTo));
-            Assert.Equal(string.Empty, description);
-            Assert.Equal(default(Span), applicableTo);
-        }
-
-        [Fact]
-        public static void TryGetDescriptionReturnsDescriptionAndSpanOfNodeWhenNodeHasNoChildren()
-        {
-            var target = new TestableSyntaxNodeWithDescription(new Span(0, 1));
-            var attribute = typeof(TestableSyntaxNodeWithDescription).GetCustomAttributes(false).OfType<DescriptionAttribute>().Single();
-            string description;
-            Span applicableTo;
-            Assert.True(target.TryGetDescription(0, out description, out applicableTo));
-            Assert.Equal(attribute.Description, description);
-            Assert.Equal(target.Span, applicableTo);
-        }
-
-        [Fact]
-        public static void TryGetDescriptionReturnsDescriptionAndSpanOfChildNodeWhoseSpanContainsGivenPosition()
-        {
-            SyntaxNode child = new TestableSyntaxNodeWithDescription(new Span(0, 2));
-            var childAttribute = typeof(TestableSyntaxNodeWithDescription).GetCustomAttributes(false).OfType<DescriptionAttribute>().Single();
-            var parent = new TestableSyntaxNode(default(SyntaxKind), new Span(0, 4), child);
-            string description;
-            Span applicableTo;
-            Assert.True(parent.TryGetDescription(0, out description, out applicableTo));
-            Assert.Equal(childAttribute.Description, description);
-            Assert.Equal(child.Span, applicableTo);
-        }
-
-        [Fact]
-        public static void TryGetDescriptionReturnsDescriptionAndSpanOfParentIfChildsDescriptionIsEmpty()
-        {
-            var parent = new TestableSyntaxNodeWithDescription(new Span(0, 4), new TestableSyntaxNode(SyntaxKind.BlockEnd, new Span(0, 2)));
-            var parentAttribute = typeof(TestableSyntaxNodeWithDescription).GetCustomAttributes(false).OfType<DescriptionAttribute>().Single();
-            string description;
-            Span applicableTo;
-            Assert.True(parent.TryGetDescription(0, out description, out applicableTo));
-            Assert.Equal(parentAttribute.Description, description);
-            Assert.Equal(parent.Span, applicableTo);
-        }
-
-        #endregion
-
-        private class TestableSyntaxNode : SyntaxNode
-        {
-            private readonly SyntaxKind kind;
-            private readonly Position position;
-            private readonly Span span;
-            private readonly SyntaxNode[] childNodes;
-
-            public TestableSyntaxNode(Position position)
+            [Theory, TestConventions]
+            internal static void ReturnsTrueWhenKindIsSame(SyntaxKind kind)
             {
-                this.position = position;
+                var left = Testable<SyntaxNode>(kind);
+                var right = Testable<SyntaxNode>(kind);
+                Assert.True(left.Equals(right));
             }
 
-            public TestableSyntaxNode(SyntaxKind kind, params SyntaxNode[] childNodes)
-                : this(kind, default(Span), childNodes)
-            {               
-            }
-
-            public TestableSyntaxNode(SyntaxKind kind, Span span, params SyntaxNode[] childNodes)
+            [Theory, TestConventions]
+            internal static void ReturnsFalseWhenKindIsDifferent(SyntaxKind kind1, SyntaxKind kind2)
             {
-                this.kind = kind;
-                this.span = span;
-                this.childNodes = childNodes;
+                var left = Testable<SyntaxNode>(kind1);
+                var right = Testable<SyntaxNode>(kind2);
+                Assert.False(left.Equals(right));
             }
 
-            public override SyntaxKind Kind
+            [Theory, TestConventions]
+            internal static void ReturnsTrueWhenPositionIsSame(Position position)
             {
-                get { return this.kind; }
+                var left = Testable<SyntaxNode>(position);
+                var right = Testable<SyntaxNode>(position);
+                Assert.True(left.Equals(right));
             }
 
-            public override Position Position
+            [Theory, TestConventions]
+            internal static void ReturnsFalseWhenPositionIsDifferent(Position position1, Position position2)
             {
-                get { return this.position; }
+                var left = Testable<SyntaxNode>(position1);
+                var right = Testable<SyntaxNode>(position2);
+                Assert.False(left.Equals(right));
             }
 
-            public override Span Span
+            [Theory, TestConventions]
+            internal static void ReturnsTrueWhenSpanIsSame(Span span)
             {
-                get { return this.span; }
+                var left = Testable<SyntaxNode>(span);
+                var right = Testable<SyntaxNode>(span);
+                Assert.True(left.Equals(right));
             }
 
-            public override IEnumerable<SyntaxNode> ChildNodes()
+            [Theory, TestConventions]
+            internal static void ReturnsFalseWhenSpanIsDifferent(Span span1, Span span2)
             {
-                return this.childNodes ?? Enumerable.Empty<SyntaxNode>();
+                var left = Testable<SyntaxNode>(span1);
+                var right = Testable<SyntaxNode>(span2);
+                Assert.False(left.Equals(right));
             }
 
-            public override IEnumerable<TemplateError> Validate()
+            [Theory, TestConventions]
+            internal static void ReturnsTrueWhenChildNodesAreSame(SyntaxKind kind)
             {
-                throw new NotImplementedException();
+                var left = Testable<SyntaxNode>(Testable<SyntaxNode>(kind), Testable<SyntaxNode>(kind));
+                var right = Testable<SyntaxNode>(Testable<SyntaxNode>(kind), Testable<SyntaxNode>(kind));
+                Assert.True(left.Equals(right));
             }
 
-            protected internal override void Accept(SyntaxNodeVisitor visitor)
+            [Theory, TestConventions]
+            internal static void ReturnsFalseWhenChildNodesAreDifferent(SyntaxNode child1, SyntaxNode child2)
             {
-                throw new NotImplementedException();
+                var left = Testable<SyntaxNode>(child1);
+                var right = Testable<SyntaxNode>(child2);
+                Assert.False(left.Equals(right));
             }
+        }
+
+        public static new class GetHashCode
+        {
+            [Theory, TestConventions]
+            internal static void GetHashCodeReturnsSameValuesForSamePositions(Position position)
+            {
+                var n1 = Testable<SyntaxNode>(position);
+                var n2 = Testable<SyntaxNode>(position);
+                Assert.Equal(n1.GetHashCode(), n2.GetHashCode());
+            }
+
+            [Theory, TestConventions]
+            internal static void GetHashCodeReturnsDifferentValuesForDifferentPositions(Position position1, Position position2)
+            {
+                var n1 = Testable<SyntaxNode>(position1);
+                var n2 = Testable<SyntaxNode>(position2);
+                Assert.NotEqual(n1.GetHashCode(), n2.GetHashCode());
+            }
+        }
+
+        public static class GetText
+        {
+            [Fact]
+            public static void ReturnsSubstringOfTemplateBasedOnSpan()
+            {
+                var node = Testable<SyntaxNode>(new Span(4, 9));
+                Assert.Equal("directive", node.GetText("<#@ directive #>"));
+            }
+        }
+
+        public static class TryGetDescription
+        {
+            [Theory, TestConventions]
+            internal static void ReturnsEmptyDescriptionAndSpanGivenPositionOutsideOfItsSpan(Span span)
+            {
+                var target = Testable<SyntaxNode>(span);
+                string description;
+                Span applicableTo;
+                Assert.False(target.TryGetDescription(span.End + 1, out description, out applicableTo));
+                Assert.Empty(description);
+                Assert.Equal(default(Span), applicableTo);
+            }
+
+            [Theory, TestConventions]
+            internal static void ReturnsEmptyDescriptionAndSpanWhenNodeHasNoDescriptionAttributeAndNoChildren(Span span)
+            {
+                var target = Testable<SyntaxNode>(span);
+                string description;
+                Span applicableTo;
+                Assert.False(target.TryGetDescription(span.Start, out description, out applicableTo));
+                Assert.Empty(description);
+                Assert.Equal(default(Span), applicableTo);
+            }
+
+            [Theory, TestConventions]
+            internal static void ReturnsDescriptionAndSpanOfNodeWhenNodeHasNoChildren(Span span)
+            {
+                var target = Testable<SyntaxNodeWithDescription>(span);
+                var attribute = typeof(SyntaxNodeWithDescription).GetCustomAttributes(false).OfType<DescriptionAttribute>().Single();
+                string description;
+                Span applicableTo;
+                Assert.True(target.TryGetDescription(span.Start, out description, out applicableTo));
+                Assert.Equal(attribute.Description, description);
+                Assert.Equal(span, applicableTo);
+            }
+
+            [Theory, TestConventions]
+            internal static void ReturnsDescriptionAndSpanOfChildNodeWhoseSpanContainsGivenPosition(Span span)
+            {
+                var child = Testable<SyntaxNodeWithDescription>(span);
+                var parent = Testable<SyntaxNode>(child);
+
+                string description;
+                Span applicableTo;
+                Assert.True(parent.TryGetDescription(span.Start, out description, out applicableTo));
+
+                var childAttribute = typeof(SyntaxNodeWithDescription).GetCustomAttributes(false).OfType<DescriptionAttribute>().Single();
+                Assert.Equal(childAttribute.Description, description);
+                Assert.Equal(child.Span, applicableTo);
+            }
+
+            [Theory, TestConventions]
+            internal static void ReturnsDescriptionAndSpanOfParentIfChildsDescriptionIsEmpty(Span span)
+            {
+                var child = Testable<SyntaxNode>(span);
+                var parent = Testable<SyntaxNodeWithDescription>(child);
+
+                string description;
+                Span applicableTo;
+                Assert.True(parent.TryGetDescription(span.Start, out description, out applicableTo));
+
+                var parentAttribute = typeof(SyntaxNodeWithDescription).GetCustomAttributes(false).OfType<DescriptionAttribute>().Single();
+                Assert.Equal(parentAttribute.Description, description);
+                Assert.Equal(parent.Span, applicableTo);
+            }
+        }
+
+        private static T Testable<T>(SyntaxKind kind) where T : SyntaxNode
+        {
+            T node = Substitute.ForPartsOf<T>();
+            node.Kind.Returns(kind);
+            return node;
+        }
+
+        private static T Testable<T>(Position position) where T : SyntaxNode
+        {
+            T node = Substitute.ForPartsOf<T>();
+            node.Position.Returns(position);
+            return node;
+        }
+
+        private static T Testable<T>(Span span) where T : SyntaxNode
+        {
+            T node = Substitute.ForPartsOf<T>();
+            node.Span.Returns(span);
+            return node;
+        }
+
+        private static T Testable<T>(params SyntaxNode[] childNodes) where T : SyntaxNode
+        {
+            T node = Testable<T>(Span.FromBounds(childNodes.First().Span.Start, childNodes.Last().Span.End));
+            node.ChildNodes().Returns(childNodes);
+            return node;
         }
 
         [Description("Description of TestableSyntaxNodeWithDescription")]
-        private class TestableSyntaxNodeWithDescription : TestableSyntaxNode
+        internal abstract class SyntaxNodeWithDescription : SyntaxNode
         {
-            public TestableSyntaxNodeWithDescription(Span span, params SyntaxNode[] childNodes)
-                : base(default(SyntaxKind), span, childNodes)
-            {                
-            }
         }
     }
 }
