@@ -12,7 +12,7 @@ namespace T4Toolbox
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Runtime.Remoting.Messaging;
+    //using System.Runtime.Remoting.Messaging;
     using System.Text;
     using Microsoft.VisualStudio.TextTemplating;
     using Microsoft.VisualStudio.TextTemplating.VSHost;
@@ -296,7 +296,10 @@ namespace T4Toolbox
                 }
             }
 
-            this.Transformation.Errors.AddRange(errors);
+            //this.Transformation.Errors.AddRange(errors);
+            var compilerErrorCollection = typeof(TextTransformation).GetProperty("Errors")
+                .GetMethod.Invoke(this.Transformation, null) as CompilerErrorCollection;
+            compilerErrorCollection.AddRange(errors);
         }
 
         /// <summary>
@@ -345,7 +348,8 @@ namespace T4Toolbox
                 }
 
                 if ((this.Transformation.Session != null && this.Transformation.Session.ContainsKey(property.Name)) || 
-                    CallContext.LogicalGetData(property.Name) != null)
+                    //CallContext.LogicalGetData(property.Name) != null)
+                    CallContext.GetData(property.Name) != null)
                 {
                     // Parameter values specified explicitly by the code transforming the template take precedence over values specified in the metadata
                     continue;

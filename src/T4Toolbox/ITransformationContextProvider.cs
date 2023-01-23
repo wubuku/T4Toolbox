@@ -5,7 +5,7 @@
 namespace T4Toolbox
 {
     using System.Runtime.InteropServices;
-    using Microsoft.VisualStudio.TextTemplating.VSHost;
+    //using Microsoft.VisualStudio.TextTemplating.VSHost;
 
     /// <summary>
     /// Encapsulates host-specific functionality required by the <see cref="TransformationContext"/>.
