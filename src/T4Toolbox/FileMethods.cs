@@ -11,7 +11,7 @@ namespace T4Toolbox
     /// <summary>
     /// File access utility methods.
     /// </summary>
-    internal static class FileMethods
+    public static class FileMethods
     {
         /// <summary>
         /// Converts absolute path to a relative path.
@@ -25,7 +25,7 @@ namespace T4Toolbox
         /// <returns>
         /// Relative path to the specified file.
         /// </returns>
-        internal static string GetRelativePath(string fromFile, string toFile)
+        public static string GetRelativePath(string fromFile, string toFile)
         {
             var relativePath = new StringBuilder(260);
             if (!NativeMethods.PathRelativePathTo(relativePath, fromFile, 0, toFile, 0))

@@ -151,7 +151,8 @@ namespace T4Toolbox.VisualStudio
 
         private string GetTransformationOutputExtensionFromHost()
         {
-            var components = (ITextTemplatingComponents)this.serviceProvider.GetService(typeof(STextTemplating));
+            //var components = (ITextTemplatingComponents)this.serviceProvider.GetService(typeof(STextTemplating));
+            var components = (ITextTemplatingComponents)this.serviceProvider.GetService(typeof(ITextTemplatingComponents));
             var callback = components.Callback as TextTemplatingCallback; // Callback can be passed to ITextTemplating.ProcessTemplate by user code.
             if (callback == null)
             {

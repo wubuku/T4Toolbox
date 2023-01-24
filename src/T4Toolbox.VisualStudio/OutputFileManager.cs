@@ -16,7 +16,7 @@ namespace T4Toolbox.VisualStudio
     using System.Text;
     using EnvDTE;
     using EnvDTE80;
-    using Microsoft.Build.Execution;
+    //using Microsoft.Build.Execution;
     using Microsoft.VisualStudio;
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.VisualStudio.TextTemplating;
@@ -46,7 +46,8 @@ namespace T4Toolbox.VisualStudio
             this.dte = (DTE)serviceProvider.GetService(typeof(DTE));
             this.projects = GetAllProjects(this.dte.Solution);
             this.input = this.dte.Solution.FindProjectItem(this.inputFile);
-            this.templatingHost = (ITextTemplatingEngineHost)this.serviceProvider.GetService(typeof(STextTemplating));
+            //this.templatingHost = (ITextTemplatingEngineHost)this.serviceProvider.GetService(typeof(STextTemplating));
+            this.templatingHost = (ITextTemplatingEngineHost)this.serviceProvider.GetService(typeof(ITextTemplatingEngineHost));
         }
 
         /// <summary>
@@ -346,28 +347,28 @@ namespace T4Toolbox.VisualStudio
             return true;
         }
 
-        private static void ReloadDocument(IVsRunningDocumentTable runningDocumentTable, string outputFilePath)
-        {
-            if (runningDocumentTable == null)
-            {
-                // SVsRunningDocumentTable service is not available (as in a unit test).
-                return;
-            }
+        //private static void ReloadDocument(IVsRunningDocumentTable runningDocumentTable, string outputFilePath)
+        //{
+        //    if (runningDocumentTable == null)
+        //    {
+        //        // SVsRunningDocumentTable service is not available (as in a unit test).
+        //        return;
+        //    }
 
-            IVsHierarchy hierarchy;
-            uint itemId;
-            IntPtr persistDocDataPointer;
-            uint cookie;
-            ErrorHandler.ThrowOnFailure(runningDocumentTable.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, outputFilePath, out hierarchy, out itemId, out persistDocDataPointer, out cookie));
-            if (persistDocDataPointer == IntPtr.Zero)
-            {
-                // Document is not currently opened in Visual Studio editor. 
-                return;
-            }
+        //    IVsHierarchy hierarchy;
+        //    uint itemId;
+        //    IntPtr persistDocDataPointer;
+        //    uint cookie;
+        //    ErrorHandler.ThrowOnFailure(runningDocumentTable.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, outputFilePath, out hierarchy, out itemId, out persistDocDataPointer, out cookie));
+        //    if (persistDocDataPointer == IntPtr.Zero)
+        //    {
+        //        // Document is not currently opened in Visual Studio editor. 
+        //        return;
+        //    }
 
-            var persistDocData = (IVsPersistDocData)Marshal.GetObjectForIUnknown(persistDocDataPointer);
-            ErrorHandler.ThrowOnFailure(persistDocData.ReloadDocData((uint)(_VSRELOADDOCDATA.RDD_IgnoreNextFileChange | _VSRELOADDOCDATA.RDD_RemoveUndoStack)));
-        }
+        //    var persistDocData = (IVsPersistDocData)Marshal.GetObjectForIUnknown(persistDocDataPointer);
+        //    ErrorHandler.ThrowOnFailure(persistDocData.ReloadDocData((uint)(_VSRELOADDOCDATA.RDD_IgnoreNextFileChange | _VSRELOADDOCDATA.RDD_RemoveUndoStack)));
+        //}
 
         /// <summary>
         /// Determines whether two project items collections are the same.
@@ -612,13 +613,13 @@ namespace T4Toolbox.VisualStudio
 
         private void SaveOutputFiles(IEnumerable<OutputFile> outputsToSave)
         {
-            var runningDocumentTable = (IVsRunningDocumentTable)this.serviceProvider.GetService(typeof(SVsRunningDocumentTable));
+            //var runningDocumentTable = (IVsRunningDocumentTable)this.serviceProvider.GetService(typeof(SVsRunningDocumentTable));
             foreach (OutputFile output in outputsToSave)
             {
                 string outputFilePath = this.GetFullPath(output.Path);
                 Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
                 File.WriteAllText(outputFilePath, output.Content.ToString(), output.Encoding);
-                ReloadDocument(runningDocumentTable, outputFilePath);
+                //ReloadDocument(runningDocumentTable, outputFilePath);
             }            
         }
 
@@ -627,46 +628,47 @@ namespace T4Toolbox.VisualStudio
         /// </summary>
         private void CheckoutFiles(string[] filePaths)
         {
-            var queryService = (IVsQueryEditQuerySave2)this.serviceProvider.GetService(typeof(SVsQueryEditQuerySave));
-            if (queryService == null)
-            {
-                // SVsQueryEditQueryService is not available, don't try to check out files.
-                return;
-            }
+            return;
+            //var queryService = (IVsQueryEditQuerySave2)this.serviceProvider.GetService(typeof(SVsQueryEditQuerySave));
+            //if (queryService == null)
+            //{
+            //    // SVsQueryEditQueryService is not available, don't try to check out files.
+            //    return;
+            //}
 
-            // Call QueryEditFiles to perform the action specified in the Source Control/Editing setting of the Visual Studio Options dialog.
-            // Although, technically, we are not "editing" the generated files, we call this method because, unlike QuerySaveFiles, it displays 
-            // a single visual prompt for all files that need to be checked out.
-            uint editInfo;
-            uint editResult;
-            ErrorHandler.ThrowOnFailure(queryService.QueryEditFiles((uint)tagVSQueryEditFlags.QEF_DisallowInMemoryEdits, filePaths.Length, filePaths, null, null, out editResult, out editInfo));
-            if (editResult == (uint)tagVSQueryEditResult.QER_EditOK)
-            {
-                return;
-            }
+            //// Call QueryEditFiles to perform the action specified in the Source Control/Editing setting of the Visual Studio Options dialog.
+            //// Although, technically, we are not "editing" the generated files, we call this method because, unlike QuerySaveFiles, it displays 
+            //// a single visual prompt for all files that need to be checked out.
+            //uint editInfo;
+            //uint editResult;
+            //ErrorHandler.ThrowOnFailure(queryService.QueryEditFiles((uint)tagVSQueryEditFlags.QEF_DisallowInMemoryEdits, filePaths.Length, filePaths, null, null, out editResult, out editInfo));
+            //if (editResult == (uint)tagVSQueryEditResult.QER_EditOK)
+            //{
+            //    return;
+            //}
 
-            if (editResult == (uint)tagVSQueryEditResult.QER_NoEdit_UserCanceled && 
-                (editInfo & (uint)tagVSQueryEditResultFlags.QER_CheckoutCanceledOrFailed) == (uint)tagVSQueryEditResultFlags.QER_CheckoutCanceledOrFailed)
-            {
-                throw CheckoutAbortedException();
-            }
+            //if (editResult == (uint)tagVSQueryEditResult.QER_NoEdit_UserCanceled && 
+            //    (editInfo & (uint)tagVSQueryEditResultFlags.QER_CheckoutCanceledOrFailed) == (uint)tagVSQueryEditResultFlags.QER_CheckoutCanceledOrFailed)
+            //{
+            //    throw CheckoutAbortedException();
+            //}
 
-            // If QueryEditFiles did not allow us to modify the generated files, call QuerySaveFiles to perform the action specified in the 
-            // Source Control/Saving setting of the Visual Studio Options dialog.            
-            ErrorHandler.ThrowOnFailure(queryService.BeginQuerySaveBatch()); // Allow the user to cancel check-out-on-save for all files in the batch
-            try
-            {
-                uint saveResult;
-                ErrorHandler.ThrowOnFailure(queryService.QuerySaveFiles(0, filePaths.Length, filePaths, null, null, out saveResult));
-                if (saveResult != (uint)tagVSQuerySaveResult.QSR_SaveOK)
-                {
-                    throw CheckoutAbortedException();
-                }
-            }
-            finally
-            {
-                ErrorHandler.ThrowOnFailure(queryService.EndQuerySaveBatch());
-            }            
+            //// If QueryEditFiles did not allow us to modify the generated files, call QuerySaveFiles to perform the action specified in the 
+            //// Source Control/Saving setting of the Visual Studio Options dialog.            
+            //ErrorHandler.ThrowOnFailure(queryService.BeginQuerySaveBatch()); // Allow the user to cancel check-out-on-save for all files in the batch
+            //try
+            //{
+            //    uint saveResult;
+            //    ErrorHandler.ThrowOnFailure(queryService.QuerySaveFiles(0, filePaths.Length, filePaths, null, null, out saveResult));
+            //    if (saveResult != (uint)tagVSQuerySaveResult.QSR_SaveOK)
+            //    {
+            //        throw CheckoutAbortedException();
+            //    }
+            //}
+            //finally
+            //{
+            //    ErrorHandler.ThrowOnFailure(queryService.EndQuerySaveBatch());
+            //}            
         }
 
         /// <summary>
@@ -741,15 +743,15 @@ namespace T4Toolbox.VisualStudio
         {
             if (string.IsNullOrEmpty(output.File))
             {
-                object service = this.serviceProvider.GetService(typeof(STextTemplating));
+                //object service = this.serviceProvider.GetService(typeof(STextTemplating));
 
                 // Try to change the encoding
-                var host = (ITextTemplatingEngineHost)service;
+                var host = (ITextTemplatingEngineHost)this.serviceProvider.GetService(typeof(ITextTemplatingEngineHost));//service;
                 host.SetOutputEncoding(output.Encoding, false);
 
                 // Check if the encoding was already set by the output directive and cannot be changed
-                var components = (ITextTemplatingComponents)service;
-                var callback = components.Callback as TextTemplatingCallback; // Callback can be provided by user code, not only by T4.
+                var components = (ITextTemplatingComponents)this.serviceProvider.GetService(typeof(ITextTemplatingComponents));//service;
+                var callback = components.Callback;// as TextTemplatingCallback; // Callback can be provided by user code, not only by T4.
                 if (callback != null && !object.Equals(callback.OutputEncoding, output.Encoding))
                 {
                     throw new TransformationException(

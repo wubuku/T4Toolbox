@@ -1,26 +1,27 @@
-// <copyright file="EnvDteExtensions.cs" company="Oleg Sych">
-//  Copyright © Oleg Sych. All Rights Reserved.
-// </copyright>
+//// <copyright file="EnvDteExtensions.cs" company="Oleg Sych">
+////  Copyright ï¿½ Oleg Sych. All Rights Reserved.
+//// </copyright>
 
 namespace T4Toolbox.VisualStudio
 {
     using System.Globalization;
     using EnvDTE;
     using Microsoft.VisualStudio;
-    using Microsoft.VisualStudio.OLE.Interop;
+    //using Microsoft.VisualStudio.OLE.Interop;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
 
     /// <summary>
     /// Extension methods for types in the EnvDTE namespace.
     /// </summary>
-    internal static class EnvDteExtensions 
+    internal static class EnvDteExtensions
     {
         public static IVsHierarchy AsHierarchy(this Project project)
         {
             using (var serviceProvider = new ServiceProvider((IServiceProvider)project.DTE))
             {
-                var solution = (IVsSolution)serviceProvider.GetService(typeof(SVsSolution));
+                //var solution = (IVsSolution)serviceProvider.GetService(typeof(SVsSolution));
+                var solution = (IVsSolution)serviceProvider.GetService(typeof(IVsSolution));
 
                 IVsHierarchy hierarchy;
                 ErrorHandler.ThrowOnFailure(solution.GetProjectOfUniqueName(project.UniqueName, out hierarchy));
@@ -52,7 +53,8 @@ namespace T4Toolbox.VisualStudio
         {
             IVsHierarchy hierarchy = projectItem.ContainingProject.AsHierarchy();
             uint itemId;
-            ErrorHandler.ThrowOnFailure(hierarchy.ParseCanonicalName(projectItem.FileNames[1], out itemId));
+            //ErrorHandler.ThrowOnFailure(hierarchy.ParseCanonicalName(projectItem.FileNames[1], out itemId));
+            ErrorHandler.ThrowOnFailure(hierarchy.ParseCanonicalName(projectItem.get_FileNames(1), out itemId));
             return itemId;
         }
 
@@ -65,7 +67,7 @@ namespace T4Toolbox.VisualStudio
             uint projectItemId;
             GetBuildPropertyStorage(projectItem, out propertyStorage, out projectItemId);
 
-            ErrorHandler.ThrowOnFailure(propertyStorage.SetItemAttribute(projectItemId, attributeName, attributeValue));            
+            ErrorHandler.ThrowOnFailure(propertyStorage.SetItemAttribute(projectItemId, attributeName, attributeValue));
         }
 
         /// <summary>
@@ -90,7 +92,8 @@ namespace T4Toolbox.VisualStudio
         {
             IVsHierarchy hierarchy = projectItem.ContainingProject.AsHierarchy();
             propertyStorage = (IVsBuildPropertyStorage)hierarchy;
-            ErrorHandler.ThrowOnFailure(hierarchy.ParseCanonicalName(projectItem.FileNames[1], out projectItemId));
+            //ErrorHandler.ThrowOnFailure(hierarchy.ParseCanonicalName(projectItem.FileNames[1], out projectItemId));
+            ErrorHandler.ThrowOnFailure(hierarchy.ParseCanonicalName(projectItem.get_FileNames(1), out projectItemId));
         }
     }
 }
