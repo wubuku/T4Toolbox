@@ -2,9 +2,17 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>T4Toolbox.Mono</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>Oleg Sych,Yang Jiefeng</Authors>
+    <!--<Company>your_company</Company>-->
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +35,9 @@
 
   <ItemGroup>
     <PackageReference Include="Mono.TextTemplating" Version="2.3.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\T4Toolbox.VSTextTemplating\T4Toolbox.VSTextTemplating.csproj" />
   </ItemGroup>
 </Project>
 

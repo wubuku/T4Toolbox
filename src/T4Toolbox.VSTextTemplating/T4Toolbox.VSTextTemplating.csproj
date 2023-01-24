@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -8,20 +9,14 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>T4Toolbox.DirectiveProcessors.Mono</PackageId>
+    <PackageId>T4Toolbox.VSTextTemplating.Mono</PackageId>
     <Version>0.0.1</Version>
-    <Authors>Oleg Sych,Yang Jiefeng</Authors>
+    <Authors>Yang Jiefeng</Authors>
     <!--<Company>your_company</Company>-->
   </PropertyGroup>
 
-  <!--<Import Project="..\..\T4Toolbox.Common.props" />-->
   <ItemGroup>
-    <Compile Include="..\..\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\T4Toolbox\T4Toolbox.csproj">
-    </ProjectReference>
-  </ItemGroup>
+    <PackageReference Include="Mono.TextTemplating" Version="2.3.1" />
+  </ItemGroup>  
 </Project>
+
