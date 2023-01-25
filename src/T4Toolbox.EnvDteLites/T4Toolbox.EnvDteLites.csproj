@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="T4Toolbox.Lites.VisualStudio.Interfaces">
+      <HintPath>..\..\..\..\..\GitHub\VisualStudioTextTransform\src\VisualStudio.Interfaces\bin\Debug\netstandard2.0\T4Toolbox.Lites.VisualStudio.Interfaces.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="T4Toolbox.Lites.VisualStudio.Interfaces" />
+  </ItemGroup>
+</Project>
+

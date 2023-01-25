@@ -751,7 +751,7 @@ namespace T4Toolbox.VisualStudio
 
                 // Check if the encoding was already set by the output directive and cannot be changed
                 var components = (ITextTemplatingComponents)this.serviceProvider.GetService(typeof(ITextTemplatingComponents));//service;
-                var callback = components.Callback;// as TextTemplatingCallback; // Callback can be provided by user code, not only by T4.
+                var callback = components.Callback as TextTemplatingCallback; // Callback can be provided by user code, not only by T4.
                 if (callback != null && !object.Equals(callback.OutputEncoding, output.Encoding))
                 {
                     throw new TransformationException(
