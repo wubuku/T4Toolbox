@@ -135,7 +135,7 @@ namespace T4Toolbox.EnvDteLites
                 {
                     return null;
                 }
-                return new EnvDTEPropertiesLite(this._project.Properties);
+                return new PropertiesLite(this._project.Properties);
             }
         }
 

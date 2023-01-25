@@ -82,7 +82,7 @@ namespace T4Toolbox.EnvDteLites
                 {
                     return null;
                 }
-                return new EnvDTEPropertiesLite(this._configuration.Properties);
+                return new PropertiesLite(this._configuration.Properties);
             }
         }
 

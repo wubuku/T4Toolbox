@@ -2,11 +2,11 @@
 
 namespace T4Toolbox.EnvDteLites
 {
-    public class EnvDTEPropertyLite : EnvDTE.Property
+    public class PropertyLite : EnvDTE.Property
     {
         private EnvDTE.Property _property;
 
-        public EnvDTEPropertyLite(EnvDTE.Property property)
+        public PropertyLite(EnvDTE.Property property)
         {
             if (property == null) { throw new ArgumentNullException("property"); }
             this._property = property;
