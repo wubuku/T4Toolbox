@@ -1,15 +1,20 @@
 ﻿using System;
+using EnvDTE;
+using Microsoft.Build.Construction;
 
 namespace T4Toolbox.EnvDteLites
 {
     public class PropertyLite : EnvDTE.Property
     {
-        private EnvDTE.Property _property;
+        private ProjectPropertyElement _projectPropertyElement;
 
-        public PropertyLite(EnvDTE.Property property)
+        private DTE _dte;
+
+        public PropertyLite(ProjectPropertyElement projectPropertyElement, DTE dte)
         {
-            if (property == null) { throw new ArgumentNullException("property"); }
-            this._property = property;
+            if (projectPropertyElement == null) { throw new ArgumentNullException("projectPropertyElement"); }
+            this._projectPropertyElement = projectPropertyElement;
+            this._dte = dte;
         }
 
         public object Application
@@ -24,12 +29,14 @@ namespace T4Toolbox.EnvDteLites
 
         public EnvDTE.DTE DTE
         {
-            get { throw new NotImplementedException("EnvDTE.Property.DTE"); }
+            //get { throw new NotImplementedException("EnvDTE.Property.DTE"); }
+            get { return this._dte; }
         }
 
         public string Name
         {
-            get { throw new NotImplementedException("EnvDTE.Property.Name"); }
+            //get { throw new NotImplementedException("EnvDTE.Property.Name"); }
+            get { return this._projectPropertyElement.Name; }
         }
 
         public short NumIndices
@@ -59,7 +66,7 @@ namespace T4Toolbox.EnvDteLites
             get
             {
                 //throw new NotImplementedException("EnvDTE.Property.Value");
-                return this._property.Value;
+                return this._projectPropertyElement.Value;
             }
             set
             {

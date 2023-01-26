@@ -6,17 +6,13 @@ namespace T4Toolbox.EnvDteLites
 {
     public class DTELite : DTE2, DTE
     {
-        private DTE2 _dte;
-
-        public DTE2 InnerDTE
+        private Solution _solution;
+      
+        public DTELite()
         {
-            get { return this._dte; }
-        }
-
-        public DTELite(DTE2 dte)
-        {
-            if (dte == null) { throw new ArgumentNullException("dte"); }
-            this._dte = dte;
+            //if (dte == null) { throw new ArgumentNullException("dte"); }
+            //this._dte = dte;
+            this._solution = new SolutionLite(this);
         }
 
         public Document ActiveDocument
@@ -211,8 +207,7 @@ namespace T4Toolbox.EnvDteLites
             //get { throw new NotImplementedException("Solution"); }
             get
             {
-                if (this._dte.Solution == null) { return null; }
-                return new SolutionLite(this._dte.Solution);
+                return this._solution;
             }
         }
 

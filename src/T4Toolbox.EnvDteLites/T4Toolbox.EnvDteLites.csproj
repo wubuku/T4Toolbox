@@ -14,5 +14,8 @@
   <ItemGroup>
     <None Remove="T4Toolbox.Lites.VisualStudio.Interfaces" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build" Version="17.3.2" />
+  </ItemGroup>
 </Project>
 

@@ -5,17 +5,24 @@ namespace T4Toolbox.EnvDteLites
 {
     public class ConfigurationLite : Configuration
     {
-        private Configuration _configuration;
+        private Properties _properties;
 
-        public ConfigurationLite(Configuration configuration)
+        private ConfigurationManager _collection;
+
+        private DTE _dte;
+
+        public ConfigurationLite(Properties properties, ConfigurationManager collection, DTE dte)
         {
-            if (configuration == null) { throw new ArgumentNullException("configuration"); }
-            this._configuration = configuration;
+            if (properties == null) { throw new ArgumentNullException("properties"); }
+            this._properties = properties;
+            this._collection = collection;
+            this._dte = dte;
         }
 
         public ConfigurationManager Collection
         {
-            get { throw new NotImplementedException("Configuration.Collection"); }
+            //get { throw new NotImplementedException("Configuration.Collection"); }
+            get { return _collection; }
         }
 
         public string ConfigurationName
@@ -25,7 +32,8 @@ namespace T4Toolbox.EnvDteLites
 
         public DTE DTE
         {
-            get { throw new NotImplementedException("Configuration.DTE"); }
+            //get { throw new NotImplementedException("Configuration.DTE"); }
+            get { return _dte; }
         }
 
         public string ExtenderCATID
@@ -78,11 +86,7 @@ namespace T4Toolbox.EnvDteLites
             //get { throw new NotImplementedException("Configuration.Properties"); }
             get
             {
-                if (this._configuration.Properties == null)
-                {
-                    return null;
-                }
-                return new PropertiesLite(this._configuration.Properties);
+                return _properties;
             }
         }
 

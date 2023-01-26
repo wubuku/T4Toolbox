@@ -1,16 +1,24 @@
 ﻿using EnvDTE;
 using System;
+using Microsoft.Build.Construction;
 
 namespace T4Toolbox.EnvDteLites
 {
     public class SolutionLite : Solution
     {
-        private Solution _solution;
+        private SolutionFile _solutionFile;
 
-        public SolutionLite(Solution solution)
+        private string _solutionFileFullName;
+
+        private IList<ProjectRootElement> _projectRootElements = new List<ProjectRootElement>();
+
+        private Projects _projects;
+
+        private DTE _dte;
+
+        public SolutionLite(DTE dte)
         {
-            if (solution == null) { throw new ArgumentNullException("solution"); }
-            this._solution = solution;
+            this._dte = dte;
         }
 
         public Project AddFromFile(string FileName, bool Exclusive = false)
@@ -66,18 +74,27 @@ namespace T4Toolbox.EnvDteLites
         public ProjectItem FindProjectItem(string FileName)
         {
             //throw new NotImplementedException("Solution.FindProjectItem");
-            var projectItem = this._solution.FindProjectItem(FileName);
-            if (projectItem == null)
+            foreach(Project proj in this.Projects)
             {
-                return null;
+                foreach(ProjectItem projItem in proj.ProjectItems)
+                {
+                    if (projItem is ProjectItemLite)//todo is this FindProjectItem ok?
+                    {
+                       if (FileName.Equals(
+                           ((ProjectItemLite)projItem).ProjectItemElement.Include))
+                        {
+                            return projItem;
+                        }
+                    }
+                }
             }
-            return new ProjectItemLite(projectItem);
+            return null;
         }
 
         public string FullName
         {
             //get { throw new NotImplementedException("Solution.FullName"); }
-            get { return this._solution.FullName; }
+            get { return this._solutionFileFullName; }
         }
 
         public System.Collections.IEnumerator GetEnumerator()
@@ -104,7 +121,11 @@ namespace T4Toolbox.EnvDteLites
 
         public bool IsOpen
         {
-            get { throw new NotImplementedException("Solution.IsOpen"); }
+            get
+            {
+                //throw new NotImplementedException("Solution.IsOpen");
+                return this._solutionFile != null;
+            }
         }
 
         public Project Item(object index)
@@ -115,12 +136,19 @@ namespace T4Toolbox.EnvDteLites
         public void Open(string FileName)
         {
             //throw new NotImplementedException("Solution.Open");
-            this._solution.Open(FileName);
+            this._solutionFileFullName = FileName;
+            this._solutionFile = SolutionFile.Parse(FileName);
+            foreach (var proj in _solutionFile.ProjectsInOrder)
+            {
+                var projRoot = ProjectRootElement.Open(proj.AbsolutePath);
+                this._projectRootElements.Add(projRoot);
+            }
         }
 
         public DTE Parent
         {
-            get { throw new NotImplementedException("Solution.Parent"); }
+            //get { throw new NotImplementedException("Solution.Parent"); }
+            get { return this._dte; }
         }
 
         public string ProjectItemsTemplatePath(string ProjectKind)
@@ -133,7 +161,9 @@ namespace T4Toolbox.EnvDteLites
             //get { throw new NotImplementedException("Solution.Projects"); }
             get
             {
-                return this._solution.Projects == null ? null : new ProjectsLite(this._solution.Projects);
+                this._projects = this._projects
+                    ?? new ProjectsLite(this._projectRootElements, this._dte);
+                return this._projects;
             }
         }
 

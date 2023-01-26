@@ -1,16 +1,21 @@
 ﻿using EnvDTE;
+using Microsoft.Build.Construction;
 using System;
 
 namespace T4Toolbox.EnvDteLites
 {
     public class ProjectItemsLite : ProjectItems
     {
-        private ProjectItems _projectItems;
+        private IList<ProjectItemElement> _projectItemElements;
 
-        public ProjectItemsLite(ProjectItems projectItems)
+        private Project _containingProject;
+
+
+        public ProjectItemsLite(IList<ProjectItemElement> projectItemElements, Project containingProject)
         {
-            if (projectItems == null) { throw new ArgumentNullException("projectItems"); }
-            this._projectItems = projectItems;
+            if (projectItemElements == null) { throw new ArgumentNullException("projectItemElements"); }
+            this._projectItemElements = projectItemElements;
+            this._containingProject = containingProject;
         }
 
         public ProjectItem AddFolder(string Name, string Kind = "{6BB5F8EF-4483-11D3-8BCF-00C04F8EC28C}")
@@ -40,7 +45,8 @@ namespace T4Toolbox.EnvDteLites
 
         public Project ContainingProject
         {
-            get { throw new NotImplementedException("ProjectItems.ContainingProject"); }
+            //get { throw new NotImplementedException("ProjectItems.ContainingProject"); }
+            get { return this._containingProject; }
         }
 
         public int Count
@@ -50,15 +56,16 @@ namespace T4Toolbox.EnvDteLites
 
         public DTE DTE
         {
-            get { throw new NotImplementedException("ProjectItems.DTE"); }
+            //get { throw new NotImplementedException("ProjectItems.DTE"); }
+            get { return this.ContainingProject.DTE; }
         }
 
         public System.Collections.IEnumerator GetEnumerator()
         {
             //throw new NotImplementedException("ProjectItems.GetEnumerator");
-            foreach (ProjectItem projectItem in this._projectItems)
+            foreach (ProjectItemElement projectItemEle in this._projectItemElements)
             {
-                yield return projectItem == null ? null : new ProjectItemLite(projectItem);
+                yield return projectItemEle == null ? null : new ProjectItemLite(projectItemEle, this._containingProject);
             }
         }
 

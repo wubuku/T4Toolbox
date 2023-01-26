@@ -1,16 +1,22 @@
 ﻿using EnvDTE;
 using System;
+using Microsoft.Build.Construction;
 
 namespace T4Toolbox.EnvDteLites
 {
     public class ProjectLite : Project
     {
-        private Project _project;
+        private ProjectRootElement _projectRootElement;
 
-        public ProjectLite(Project project)
+        private DTE _dte;
+
+        private ProjectItems _projectItems;
+
+        public ProjectLite(ProjectRootElement projectRootElement, DTE dte)
         {
-            if (project == null) { throw new ArgumentNullException("project"); }
-            this._project = project;
+            if (projectRootElement == null) { throw new ArgumentNullException("projectRootElement"); }
+            this._projectRootElement = projectRootElement;
+            this._dte = dte;
         }
 
         public CodeModel CodeModel
@@ -39,7 +45,7 @@ namespace T4Toolbox.EnvDteLites
         public DTE DTE
         {
             //get { throw new NotImplementedException("Project.DTE"); }
-            get { return new DTELite((EnvDTE80.DTE2)this._project.DTE); }
+            get { return this._dte; }
         }
 
         public void Delete()
@@ -65,7 +71,7 @@ namespace T4Toolbox.EnvDteLites
         public string FullName
         {
             //get { throw new NotImplementedException("Project.FullName"); }
-            get { return this._project.FullName; }
+            get { return this._projectRootElement.FullPath; }
         }
 
         public Globals Globals
@@ -87,8 +93,9 @@ namespace T4Toolbox.EnvDteLites
 
         public string Kind
         {
-            //get { throw new NotImplementedException("Project.Kind"); }
-            get { return this._project.Kind; }
+            get { throw new NotImplementedException("Project.Kind"); }
+            //todo new NotImplementedException("Project.Kind")
+            //get { return this._projectRootElement.Kind; }
         }
 
         public string Name
@@ -118,11 +125,19 @@ namespace T4Toolbox.EnvDteLites
             //get { throw new NotImplementedException("Project.ProjectItems"); }
             get
             {
-                if (this._project.ProjectItems == null)
+                if (this._projectItems == null)
                 {
-                    return null;
+                    var ieList = new List<ProjectItemElement>();
+                    foreach (var iG in this._projectRootElement.ItemGroups)
+                    {
+                        foreach (var ie in iG.Items)
+                        {
+                            ieList.Add(ie);
+                        }
+                    }
+                    this._projectItems = new ProjectItemsLite(ieList, this);
                 }
-                return new ProjectItemsLite(this._project.ProjectItems);
+                return this._projectItems;
             }
         }
 

@@ -1,16 +1,25 @@
 ﻿using EnvDTE;
 using System;
+using Microsoft.Build.Construction;
 
 namespace T4Toolbox.EnvDteLites
 {
     public class ProjectItemLite : ProjectItem
     {
-        private ProjectItem _projectItem;
+        private ProjectItemElement _projectItemElement;
 
-        public ProjectItemLite(ProjectItem projectItem)
+        internal ProjectItemElement ProjectItemElement
         {
-            if (projectItem == null) { throw new ArgumentNullException("projectItem"); }
-            this._projectItem = projectItem;
+            get { return this._projectItemElement; }
+        }
+
+        private Project _containingProject;
+
+        public ProjectItemLite(ProjectItemElement projectItemElement, Project containingProject)
+        {
+            if (projectItemElement == null) { throw new ArgumentNullException("projectItemElement"); }
+            this._projectItemElement = projectItemElement;
+            this._containingProject = containingProject;
         }
 
         public ProjectItems Collection
@@ -28,17 +37,14 @@ namespace T4Toolbox.EnvDteLites
             //get { throw new NotImplementedException("ProjectItem.ContainingProject"); }
             get
             {
-                if (this._projectItem.ContainingProject == null)
-                {
-                    return null;
-                }
-                return new ProjectLite(this._projectItem.ContainingProject);
+                return this._containingProject;
             }
         }
 
         public DTE DTE
         {
-            get { throw new NotImplementedException("ProjectItem.DTE"); }
+            //get { throw new NotImplementedException("ProjectItem.DTE"); }
+            get { return this._containingProject.DTE; }
         }
 
         public void Delete()
@@ -157,11 +163,7 @@ namespace T4Toolbox.EnvDteLites
             //get { throw new NotImplementedException("ProjectItem.SubProject"); }
             get 
             {
-                if (this._projectItem.SubProject == null)
-                {
-                    return null;
-                }
-                return new ProjectLite(this._projectItem.SubProject); 
+                return null;//todo always return null SubProject?
             }
         }
 

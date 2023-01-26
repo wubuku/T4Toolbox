@@ -1,40 +1,46 @@
 ﻿using EnvDTE;
 using System;
+using Microsoft.Build.Construction;
 
 namespace T4Toolbox.EnvDteLites
 {
     public class ProjectsLite : Projects
     {
-        private Projects _projects;
+        private IList<ProjectRootElement> _projectRootElements;
+        private DTE _dte;
 
-        public ProjectsLite(Projects projects)
+        public ProjectsLite(IList<ProjectRootElement> projectRootElements, DTE dte)
         {
-            if (projects == null) { throw new ArgumentNullException("projects"); }
-            this._projects = projects;
+            if (projectRootElements == null) { throw new ArgumentNullException("projectRootElements"); }
+            this._projectRootElements = projectRootElements;
+            this._dte = dte;
         }
 
         public int Count
         {
-            get { throw new NotImplementedException("Projects.Count"); }
+            //get { throw new NotImplementedException("Projects.Count"); }
+            get { return this._projectRootElements.Count; }
         }
 
         public DTE DTE
         {
-            get { throw new NotImplementedException("Projects.DTE"); }
+            //get { throw new NotImplementedException("Projects.DTE"); }
+            get { return this._dte; }
         }
 
         public System.Collections.IEnumerator GetEnumerator()
         {
             //throw new NotImplementedException("Projects.");
-            foreach (Project project in this._projects)
+            foreach (ProjectRootElement projectEle in this._projectRootElements)
             {
-                yield return new ProjectLite(project);
+                yield return new ProjectLite(projectEle, this._dte);
             }
         }
 
         public Project Item(object index)
         {
-            throw new NotImplementedException("Projects.GetEnumerator");
+            //throw new NotImplementedException("Projects.GetEnumerator");
+            return new ProjectLite(this._projectRootElements[Convert.ToInt32(index)], this._dte);
         }
 
         public string Kind
@@ -44,7 +50,8 @@ namespace T4Toolbox.EnvDteLites
 
         public DTE Parent
         {
-            get { throw new NotImplementedException("Projects.Parent"); }
+            //get { throw new NotImplementedException("Projects.Parent"); }
+            get { return this._dte; }
         }
 
         public EnvDTE.Properties Properties

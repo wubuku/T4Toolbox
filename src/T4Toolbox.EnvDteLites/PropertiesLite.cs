@@ -1,15 +1,20 @@
 ﻿using System;
+using EnvDTE;
+using Microsoft.Build.Construction;
 
 namespace T4Toolbox.EnvDteLites
 {
     public class PropertiesLite : EnvDTE.Properties
     {
-        private EnvDTE.Properties _properties;
+        private IList<ProjectPropertyElement> _projectPropertyElements;
 
-        public PropertiesLite(EnvDTE.Properties properties)
+        private DTE _dte;
+
+        public PropertiesLite(IList<ProjectPropertyElement> projectPropertyElements, DTE dte)
         {
-            if (properties == null) { throw new ArgumentNullException("properties"); }
-            this._properties = properties;
+            if (projectPropertyElements == null) { throw new ArgumentNullException("projectPropertyElements"); }
+            this._projectPropertyElements = projectPropertyElements;
+            this._dte = dte;
         }
 
         public object Application
@@ -19,28 +24,34 @@ namespace T4Toolbox.EnvDteLites
 
         public int Count
         {
-            get { throw new NotImplementedException("EnvDTE.Properties.Count"); }
+            //get { throw new NotImplementedException("EnvDTE.Properties.Count"); }
+            get { return this._projectPropertyElements.Count; }
         }
 
         public EnvDTE.DTE DTE
         {
-            get { throw new NotImplementedException("EnvDTE.Properties.DTE"); }
+            //get { throw new NotImplementedException("EnvDTE.Properties.DTE"); }
+            get { return _dte; }
         }
 
         public System.Collections.IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException("EnvDTE.Properties.GetEnumerator");
+            //throw new NotImplementedException("EnvDTE.Properties.GetEnumerator");
+            foreach(var e in this._projectPropertyElements)
+            {
+                yield return new PropertyLite(e, _dte);
+            }
         }
 
         public EnvDTE.Property Item(object index)
         {
             //throw new NotImplementedException("EnvDTE.Properties.Item");
-            var item = this._properties.Item(index);
+            var item = this._projectPropertyElements[Convert.ToInt32(index)];
             if (item == null)
             {
                 return null;
             }
-            return new PropertyLite(item);
+            return new PropertyLite(item, _dte);
         }
 
         public object Parent

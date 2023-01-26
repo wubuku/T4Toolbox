@@ -5,12 +5,15 @@ namespace T4Toolbox.EnvDteLites
 {
     public class ConfigurationManagerLite : ConfigurationManager
     {
-        private ConfigurationManager _configurationManager;
+        private Configuration _activeConfiguration;
 
-        public ConfigurationManagerLite(ConfigurationManager configurationManager)
+        private DTE _dte;
+
+        public ConfigurationManagerLite(Configuration activeConfiguration, DTE dte)
         {
-            if (configurationManager == null) { throw new ArgumentNullException("configurationManager"); }
-            this._configurationManager = configurationManager;
+            if (activeConfiguration == null) { throw new ArgumentNullException("activeConfiguration"); }
+            this._activeConfiguration = activeConfiguration;
+            this._dte = dte;
         }
 
         public Configuration ActiveConfiguration
@@ -18,8 +21,7 @@ namespace T4Toolbox.EnvDteLites
             //get { throw new NotImplementedException("ConfigurationManager.ActiveConfiguration"); }
             get
             {
-                if (this._configurationManager.ActiveConfiguration == null) { return null; }
-                return new ConfigurationLite(this._configurationManager.ActiveConfiguration);
+                return this._activeConfiguration;
             }
         }
 
@@ -50,7 +52,8 @@ namespace T4Toolbox.EnvDteLites
 
         public DTE DTE
         {
-            get { throw new NotImplementedException("ConfigurationManager.DTE"); }
+            //get { throw new NotImplementedException("ConfigurationManager.DTE"); }
+            get { return _dte; }
         }
 
         public void DeleteConfigurationRow(string Name)
