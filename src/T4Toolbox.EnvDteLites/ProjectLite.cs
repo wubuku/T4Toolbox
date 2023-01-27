@@ -12,6 +12,10 @@ namespace T4Toolbox.EnvDteLites
 
         private ProjectItems _projectItems;
 
+        private ConfigurationManager _configurationManager;
+
+        private Properties _properties;
+
         public ProjectLite(ProjectRootElement projectRootElement, DTE dte)
         {
             if (projectRootElement == null) { throw new ArgumentNullException("projectRootElement"); }
@@ -34,11 +38,11 @@ namespace T4Toolbox.EnvDteLites
             //get { throw new NotImplementedException("Project.ConfigurationManager"); }
             get
             {
-                if (this._project.ConfigurationManager == null)
+                if (this._configurationManager == null)
                 {
-                    return null;
+                    return new ConfigurationManagerLite(this._projectRootElement, _dte);
                 }
-                return new ConfigurationManagerLite(this._project.ConfigurationManager);
+                return this._configurationManager;
             }
         }
 
@@ -141,16 +145,18 @@ namespace T4Toolbox.EnvDteLites
             }
         }
 
-        public EnvDTE.Properties Properties
+        public Properties Properties
         {
             //get { throw new NotImplementedException("Project.Properties"); }
             get
             {
-                if (this._project.Properties == null)
+                if (this._properties == null)
                 {
-                    return null;
+                    var ps = new Dictionary<string, ProjectPropertyElement>();
+                    //todo fill ProjectPropertyElement dict....
+                    this._properties = new PropertiesLite(ps, _dte);
                 }
-                return new PropertiesLite(this._project.Properties);
+                return this._properties;
             }
         }
 

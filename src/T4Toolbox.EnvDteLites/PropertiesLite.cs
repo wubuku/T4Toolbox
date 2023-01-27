@@ -6,11 +6,11 @@ namespace T4Toolbox.EnvDteLites
 {
     public class PropertiesLite : EnvDTE.Properties
     {
-        private IList<ProjectPropertyElement> _projectPropertyElements;
+        private IDictionary<string, ProjectPropertyElement> _projectPropertyElements;
 
         private DTE _dte;
 
-        public PropertiesLite(IList<ProjectPropertyElement> projectPropertyElements, DTE dte)
+        public PropertiesLite(IDictionary<string, ProjectPropertyElement> projectPropertyElements, DTE dte)
         {
             if (projectPropertyElements == null) { throw new ArgumentNullException("projectPropertyElements"); }
             this._projectPropertyElements = projectPropertyElements;
@@ -37,7 +37,7 @@ namespace T4Toolbox.EnvDteLites
         public System.Collections.IEnumerator GetEnumerator()
         {
             //throw new NotImplementedException("EnvDTE.Properties.GetEnumerator");
-            foreach(var e in this._projectPropertyElements)
+            foreach(var e in this._projectPropertyElements.Values)
             {
                 yield return new PropertyLite(e, _dte);
             }
@@ -49,9 +49,8 @@ namespace T4Toolbox.EnvDteLites
             /* 
              * string outDir = project.ConfigurationManager.ActiveConfiguration
              *     .Properties.Item("OutputPath").Value.ToString();
-             */
-            //todo onvert.ToInt32???
-            var item = this._projectPropertyElements[Convert.ToInt32(index)];
+             */            
+            var item = this._projectPropertyElements[Convert.ToString(index)];
             if (item == null)
             {
                 return null;

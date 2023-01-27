@@ -1,11 +1,12 @@
 ﻿using EnvDTE;
+using Microsoft.Build.Construction;
 using System;
 
 namespace T4Toolbox.EnvDteLites
 {
     public class ConfigurationManagerLite : ConfigurationManager
     {
-
+        private ProjectRootElement _projectRootElement;
         /*
         * string outDir = project.ConfigurationManager.ActiveConfiguration
         *    .Properties.Item("OutputPath").Value.ToString();
@@ -14,10 +15,10 @@ namespace T4Toolbox.EnvDteLites
 
         private DTE _dte;
 
-        public ConfigurationManagerLite(Configuration activeConfiguration, DTE dte)
+        public ConfigurationManagerLite(ProjectRootElement projectRootElement, DTE dte)
         {
-            if (activeConfiguration == null) { throw new ArgumentNullException("activeConfiguration"); }
-            this._activeConfiguration = activeConfiguration;
+            if (projectRootElement == null) { throw new ArgumentNullException("projectRootElement"); }
+            this._projectRootElement = projectRootElement;
             this._dte = dte;
         }
 
@@ -26,6 +27,18 @@ namespace T4Toolbox.EnvDteLites
             //get { throw new NotImplementedException("ConfigurationManager.ActiveConfiguration"); }
             get
             {
+                if (this._activeConfiguration == null)
+                {
+                    /*
+                     * <PropertyGroup>
+                     *   <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+                     */
+                    var ps = new Dictionary<string, ProjectPropertyElement>();
+                    //todo fill active config. props
+
+                    var properties = new PropertiesLite(ps, _dte);
+                    this._activeConfiguration = new ConfigurationLite(properties, this, _dte);
+                }
                 return this._activeConfiguration;
             }
         }
