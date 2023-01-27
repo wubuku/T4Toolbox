@@ -10,5 +10,7 @@ namespace Microsoft.VisualStudio.TextTemplating.VSHost
 
         void SetOutputEncoding(System.Text.Encoding encoding, bool fromOutputDirective);
     }
+
+    //todo add a TextTemplatingCallback implements ITextTemplatingCallback??
 }
-    
+
