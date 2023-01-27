@@ -35,6 +35,12 @@ namespace T4Toolbox.EnvDteLites
         public Project ContainingProject
         {
             //get { throw new NotImplementedException("ProjectItem.ContainingProject"); }
+            /*
+             * var project = templateFileItem.ContainingProject;
+             * var projectDir = Path.GetDirectoryName(project.FullName);
+             * Debug.Assert(projectDir != null, "projectDir != null, don't expect project.FullName to be a root directory.");
+             * string defaultNamespace = project.Properties.Item("DefaultNamespace").Value.ToString();
+             */
             get
             {
                 return this._containingProject;

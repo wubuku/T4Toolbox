@@ -46,6 +46,11 @@ namespace T4Toolbox.EnvDteLites
         public EnvDTE.Property Item(object index)
         {
             //throw new NotImplementedException("EnvDTE.Properties.Item");
+            /* 
+             * string outDir = project.ConfigurationManager.ActiveConfiguration
+             *     .Properties.Item("OutputPath").Value.ToString();
+             */
+            //todo onvert.ToInt32???
             var item = this._projectPropertyElements[Convert.ToInt32(index)];
             if (item == null)
             {

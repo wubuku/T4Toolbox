@@ -5,6 +5,11 @@ namespace T4Toolbox.EnvDteLites
 {
     public class ConfigurationManagerLite : ConfigurationManager
     {
+
+        /*
+        * string outDir = project.ConfigurationManager.ActiveConfiguration
+        *    .Properties.Item("OutputPath").Value.ToString();
+        */
         private Configuration _activeConfiguration;
 
         private DTE _dte;
