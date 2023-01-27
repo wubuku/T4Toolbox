@@ -7,7 +7,7 @@ namespace T4Toolbox.VisualStudio
     using System.Globalization;
     using EnvDTE;
     using Microsoft.VisualStudio;
-    //using Microsoft.VisualStudio.OLE.Interop;
+    using Microsoft.VisualStudio.OLE.Interop;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
 
@@ -18,6 +18,7 @@ namespace T4Toolbox.VisualStudio
     {
         public static IVsHierarchy AsHierarchy(this Project project)
         {
+            //todo add ServiceProvider class, and let Project implements IServiceProvider
             using (var serviceProvider = new ServiceProvider((IServiceProvider)project.DTE))
             {
                 //var solution = (IVsSolution)serviceProvider.GetService(typeof(SVsSolution));
