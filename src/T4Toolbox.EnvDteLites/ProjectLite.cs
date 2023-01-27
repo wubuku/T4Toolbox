@@ -4,7 +4,7 @@ using Microsoft.Build.Construction;
 
 namespace T4Toolbox.EnvDteLites
 {
-    public class ProjectLite : Project
+    public class ProjectLite : Project //todo implement VSProject???
     {
         private ProjectRootElement _projectRootElement;
 

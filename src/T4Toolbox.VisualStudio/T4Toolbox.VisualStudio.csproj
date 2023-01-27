@@ -19,7 +19,7 @@
  
   <ItemGroup>
     <Reference Include="T4Toolbox.Lites.VisualStudio.Interfaces">
-      <HintPath>..\..\..\..\..\GitHub\VisualStudioTextTransform\src\VisualStudio.Interfaces\bin\Debug\netstandard2.0\T4Toolbox.Lites.VisualStudio.Interfaces.dll</HintPath>
+      <HintPath>../../../../../GitHub/VisualStudioTextTransform/src/VisualStudio.Interfaces/bin/Debug/netstandard2.0/T4Toolbox.Lites.VisualStudio.Interfaces.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
