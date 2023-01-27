@@ -103,29 +103,34 @@ namespace T4Toolbox.VisualStudio
             var manager = new OutputFileManager(this.serviceProvider, inputFile, outputFiles);
             manager.Validate();
 
-            // Wait for the default output file to be generated
-            var watcher = new FileSystemWatcher();
-            watcher.Path = Path.GetDirectoryName(inputFile);
-            watcher.Filter = Path.GetFileNameWithoutExtension(inputFile) + "*." + this.GetTransformationOutputExtensionFromHost();
+            // //////////////////////////////////////////
+            //// Wait for the default output file to be generated
+            //var watcher = new FileSystemWatcher();
+            //watcher.Path = Path.GetDirectoryName(inputFile);
+            //watcher.Filter = Path.GetFileNameWithoutExtension(inputFile) + "*." + this.GetTransformationOutputExtensionFromHost();
 
-            FileSystemEventHandler runManager = (sender, args) =>
-            {
-                watcher.Dispose();
+            //FileSystemEventHandler runManager = (sender, args) =>
+            //{
+            //    watcher.Dispose();
 
-                // Store the actual output file name
-                OutputFile defaultOutput = outputFiles.FirstOrDefault(output => string.IsNullOrEmpty(output.File));
-                if (defaultOutput != null)
-                {
-                    defaultOutput.File = Path.GetFileName(args.FullPath);
-                }
+            //    // Store the actual output file name
+            //    OutputFile defaultOutput = outputFiles.FirstOrDefault(output => string.IsNullOrEmpty(output.File));
+            //    if (defaultOutput != null)
+            //    {
+            //        defaultOutput.File = Path.GetFileName(args.FullPath);
+            //    }
 
-                // Finish updating the output files on the UI thread
-                ThreadHelper.Generic.BeginInvoke(manager.DoWork);
-            };
+            //    // Finish updating the output files on the UI thread
+            //    ThreadHelper.Generic.BeginInvoke(manager.DoWork);
+            //};
 
-            watcher.Created += runManager;
-            watcher.Changed += runManager;
-            watcher.EnableRaisingEvents = true;
+            //watcher.Created += runManager;
+            //watcher.Changed += runManager;
+            //watcher.EnableRaisingEvents = true;
+            // //////////////////////////////////////////
+
+            manager.DoWork();//just do work?
+            //todo update project files?
         }
 
         /// <summary>
