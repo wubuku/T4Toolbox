@@ -184,6 +184,7 @@ namespace T4Toolbox.EnvDteLites
 
         public string UniqueName
         {
+            //todo implements UniqueName?
             get { throw new NotImplementedException("Project.UniqueName"); }
         }
 

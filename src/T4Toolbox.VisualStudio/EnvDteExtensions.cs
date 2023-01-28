@@ -10,6 +10,7 @@ namespace T4Toolbox.VisualStudio
     using Microsoft.VisualStudio.OLE.Interop;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
+    using T4Toolbox.EnvDteLites.VsShellInterop;
 
     /// <summary>
     /// Extension methods for types in the EnvDTE namespace.
@@ -18,8 +19,8 @@ namespace T4Toolbox.VisualStudio
     {
         public static IVsHierarchy AsHierarchy(this Project project)
         {
-            //todo add ServiceProvider class, and let Project implements IServiceProvider
-            using (var serviceProvider = new ServiceProvider((IServiceProvider)project.DTE))
+            //using (var serviceProvider = new ServiceProvider((IServiceProvider)project.DTE))
+            using (var serviceProvider = new ServiceProvider(project.DTE))
             {
                 //var solution = (IVsSolution)serviceProvider.GetService(typeof(SVsSolution));
                 var solution = (IVsSolution)serviceProvider.GetService(typeof(IVsSolution));
@@ -50,14 +51,14 @@ namespace T4Toolbox.VisualStudio
             return value;
         }
 
-        public static uint GetItemId(this ProjectItem projectItem)
-        {
-            IVsHierarchy hierarchy = projectItem.ContainingProject.AsHierarchy();
-            uint itemId;
-            //ErrorHandler.ThrowOnFailure(hierarchy.ParseCanonicalName(projectItem.FileNames[1], out itemId));
-            ErrorHandler.ThrowOnFailure(hierarchy.ParseCanonicalName(projectItem.get_FileNames(1), out itemId));
-            return itemId;
-        }
+        //public static uint GetItemId(this ProjectItem projectItem)
+        //{
+        //    IVsHierarchy hierarchy = projectItem.ContainingProject.AsHierarchy();
+        //    uint itemId;
+        //    //ErrorHandler.ThrowOnFailure(hierarchy.ParseCanonicalName(projectItem.FileNames[1], out itemId));
+        //    ErrorHandler.ThrowOnFailure(hierarchy.ParseCanonicalName(projectItem.get_FileNames(1), out itemId));
+        //    return itemId;
+        //}
 
         /// <summary>
         /// Sets MSBuild metadata element for the specified project item.

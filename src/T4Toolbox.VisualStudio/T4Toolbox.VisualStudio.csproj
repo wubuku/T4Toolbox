@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\T4Toolbox.DirectiveProcessors\T4Toolbox.DirectiveProcessors.csproj">
     </ProjectReference>
+    <ProjectReference Include="..\T4Toolbox.EnvDteLites\T4Toolbox.EnvDteLites.csproj" />
   </ItemGroup>
  
   <ItemGroup>
