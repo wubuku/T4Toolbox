@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace T4Toolbox.EnvDteLites.VsShellInterop
@@ -9,11 +10,11 @@ namespace T4Toolbox.EnvDteLites.VsShellInterop
 
     public class VsHierarchyLite : IVsHierarchy, IVsBuildPropertyStorage
     {
-        private ProjectItemLite _projectItem;
+        private ProjectLite _project;
 
-        public VsHierarchyLite(ProjectItemLite projectItemLite)
+        public VsHierarchyLite(Project project)
         {
-            _projectItem = projectItemLite;
+            _project = (ProjectLite)project;
         }
 
         public int AdviseHierarchyEvents(IVsHierarchyEvents pEventSink, out uint pdwCookie)
