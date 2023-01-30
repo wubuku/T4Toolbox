@@ -8,6 +8,10 @@ namespace T4Toolbox.EnvDteLites
     {
         private ProjectItemElement _projectItemElement;
 
+        private string _name;
+
+        private IList<string> _fileNames;
+
         internal ProjectItemElement ProjectItemElement
         {
             get { return this._projectItemElement; }
@@ -20,6 +24,12 @@ namespace T4Toolbox.EnvDteLites
             if (projectItemElement == null) { throw new ArgumentNullException("projectItemElement"); }
             this._projectItemElement = projectItemElement;
             this._containingProject = containingProject;
+            this._name = Path.GetFileName(projectItemElement.Include);
+            this._fileNames = new string[]
+            {
+                Path.Combine(Path.GetDirectoryName(containingProject.FileName),
+                    projectItemElement.Include)
+            };
         }
 
         public ProjectItems Collection
@@ -85,7 +95,11 @@ namespace T4Toolbox.EnvDteLites
 
         public short FileCount
         {
-            get { throw new NotImplementedException("ProjectItem.FileCount"); }
+            get {
+                //throw new NotImplementedException("ProjectItem.FileCount");
+                if (_fileNames == null) { return 0; }
+                return (short)_fileNames.Count;
+            }
         }
 
         public bool IsDirty
@@ -109,7 +123,8 @@ namespace T4Toolbox.EnvDteLites
         {
             get
             {
-                throw new NotImplementedException("ProjectItem.Name");
+                //throw new NotImplementedException("ProjectItem.Name");
+                return _name;
             }
             set
             {
@@ -180,7 +195,8 @@ namespace T4Toolbox.EnvDteLites
 
         public string get_FileNames(short index)
         {
-            throw new NotImplementedException("ProjectItem.get_FileNames");
+            //throw new NotImplementedException("ProjectItem.get_FileNames");
+            return this._fileNames[index];
         }
 
         public bool get_IsOpen(string ViewKind = "{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}")

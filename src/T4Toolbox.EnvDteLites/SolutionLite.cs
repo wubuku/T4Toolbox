@@ -81,8 +81,7 @@ namespace T4Toolbox.EnvDteLites
                 {
                     if (projItem is ProjectItemLite)//todo is this FindProjectItem ok?
                     {
-                       if (FileName.Equals(
-                           ((ProjectItemLite)projItem).ProjectItemElement.Include))
+                        if (projItem.FileCount > 0 && FileName.Equals(projItem.get_FileNames(0)))
                         {
                             return projItem;
                         }

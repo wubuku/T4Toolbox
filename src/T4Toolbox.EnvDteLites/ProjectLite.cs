@@ -19,6 +19,10 @@ namespace T4Toolbox.EnvDteLites
 
         private Properties _properties;
 
+        private string _name;
+        private string _fullName;
+        private string _fileName;
+
         public ProjectLite(ProjectRootElement projectRootElement, ProjectInSolution projectInSolution, string uniqueName, DTE dte)
         {
             if (projectRootElement == null) { throw new ArgumentNullException("projectRootElement"); }
@@ -26,6 +30,10 @@ namespace T4Toolbox.EnvDteLites
             this._projectInSolution = projectInSolution;
             this._uniqueName = uniqueName;
             this._dte = dte;
+
+            this._fullName = this._projectInSolution.AbsolutePath;
+            this._fileName = this._fullName;
+            this._name = this._projectInSolution.ProjectName;
         }
 
         public CodeModel CodeModel
@@ -74,13 +82,17 @@ namespace T4Toolbox.EnvDteLites
 
         public string FileName
         {
-            get { throw new NotImplementedException("Project.FileName"); }
+            get
+            {
+                //throw new NotImplementedException("Project.FileName");
+                return _fileName;
+            }
         }
 
         public string FullName
         {
             //get { throw new NotImplementedException("Project.FullName"); }
-            get { return this._projectRootElement.FullPath; }
+            get { return _fullName; }
         }
 
         public Globals Globals
@@ -113,7 +125,8 @@ namespace T4Toolbox.EnvDteLites
         {
             get
             {
-                throw new NotImplementedException("Project.Name");
+                //throw new NotImplementedException("Project.Name");
+                return _name;
             }
             set
             {
