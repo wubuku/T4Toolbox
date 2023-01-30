@@ -10,7 +10,8 @@ namespace T4Toolbox.EnvDteLites
 
         private string _solutionFileFullName;
 
-        private IList<ProjectRootElement> _projectRootElements = new List<ProjectRootElement>();
+        private IDictionary<string, ProjectRootElement> _projectRootElements = new Dictionary<string, ProjectRootElement>();
+        private IDictionary<string, ProjectInSolution> _projectsInSolution = new Dictionary<string, ProjectInSolution>();
 
         private Projects _projects;
 
@@ -140,8 +141,10 @@ namespace T4Toolbox.EnvDteLites
             this._solutionFile = SolutionFile.Parse(FileName);
             foreach (var proj in _solutionFile.ProjectsInOrder)
             {
-                var projRoot = ProjectRootElement.Open(proj.AbsolutePath);
-                this._projectRootElements.Add(projRoot);
+                var projRootEle = ProjectRootElement.Open(proj.AbsolutePath);
+                var uniqName = proj.RelativePath;
+                this._projectRootElements.Add(uniqName, projRootEle);
+                this._projectsInSolution.Add(uniqName, proj);
             }
         }
 
@@ -162,7 +165,7 @@ namespace T4Toolbox.EnvDteLites
             get
             {
                 this._projects = this._projects
-                    ?? new ProjectsLite(this._projectRootElements, this._dte);
+                    ?? new ProjectsLite(this._projectRootElements, this._projectsInSolution, this._dte);
                 return this._projects;
             }
         }

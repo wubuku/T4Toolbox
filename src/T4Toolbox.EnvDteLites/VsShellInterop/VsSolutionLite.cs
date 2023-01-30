@@ -1,20 +1,30 @@
 ﻿using System;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace T4Toolbox.EnvDteLites.VsShellInterop
 {
 	public class VsSolutionLite : IVsSolution
 	{
-		private SolutionLite _solution;
+		private Solution _solution;
 
-		public VsSolutionLite(SolutionLite solution)
+		public VsSolutionLite(Solution solution)
 		{
 			this._solution = solution;
 		}
 
         public int GetProjectOfUniqueName(string pszUniqueName, out IVsHierarchy ppHierarchy)
         {
-            throw new NotImplementedException();
+			foreach (Project p in _solution.Projects)
+			{
+				if (p.UniqueName.Equals(pszUniqueName))
+				{
+					ppHierarchy = new VsHierarchyLite(p);
+					return 0;
+                }
+			}
+			ppHierarchy = null;
+			return 0;
         }
     }
 }

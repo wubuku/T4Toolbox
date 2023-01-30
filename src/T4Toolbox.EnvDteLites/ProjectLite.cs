@@ -1,12 +1,15 @@
 ﻿using EnvDTE;
 using System;
 using Microsoft.Build.Construction;
+using VSLangProj;
 
 namespace T4Toolbox.EnvDteLites
 {
-    public class ProjectLite : Project //todo implement VSProject???
+    public class ProjectLite : Project, VSProject
     {
         private ProjectRootElement _projectRootElement;
+        private ProjectInSolution _projectInSolution;
+        private string _uniqueName;
 
         private DTE _dte;
 
@@ -16,10 +19,12 @@ namespace T4Toolbox.EnvDteLites
 
         private Properties _properties;
 
-        public ProjectLite(ProjectRootElement projectRootElement, DTE dte)
+        public ProjectLite(ProjectRootElement projectRootElement, ProjectInSolution projectInSolution, string uniqueName, DTE dte)
         {
             if (projectRootElement == null) { throw new ArgumentNullException("projectRootElement"); }
             this._projectRootElement = projectRootElement;
+            this._projectInSolution = projectInSolution;
+            this._uniqueName = uniqueName;
             this._dte = dte;
         }
 
@@ -184,13 +189,26 @@ namespace T4Toolbox.EnvDteLites
 
         public string UniqueName
         {
-            //todo implements UniqueName?
-            get { throw new NotImplementedException("Project.UniqueName"); }
+            //get { throw new NotImplementedException("Project.UniqueName"); }
+            get
+            {
+                return _uniqueName;
+            }
         }
 
         public object get_Extender(string ExtenderName)
         {
             throw new NotImplementedException("Project.get_Extender");
         }
+
+        References VSProject.References
+        {
+            get
+            {
+                throw new NotImplementedException("VSProject.References");
+                //todo impl. VSProject.References
+            }
+        } 
+
     }
 }

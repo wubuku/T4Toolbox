@@ -6,13 +6,16 @@ namespace T4Toolbox.EnvDteLites
 {
     public class ProjectsLite : Projects
     {
-        private IList<ProjectRootElement> _projectRootElements;
+        private IDictionary<string, ProjectRootElement> _projectRootElements;
+        private IDictionary<string, ProjectInSolution> _projectsInSolution;
+
         private DTE _dte;
 
-        public ProjectsLite(IList<ProjectRootElement> projectRootElements, DTE dte)
+        public ProjectsLite(IDictionary<string, ProjectRootElement> projectRootElements, IDictionary<string, ProjectInSolution> projectsInSolution, DTE dte)
         {
             if (projectRootElements == null) { throw new ArgumentNullException("projectRootElements"); }
             this._projectRootElements = projectRootElements;
+            this._projectsInSolution = projectsInSolution;
             this._dte = dte;
         }
 
@@ -31,9 +34,10 @@ namespace T4Toolbox.EnvDteLites
         public System.Collections.IEnumerator GetEnumerator()
         {
             //throw new NotImplementedException("Projects.");
-            foreach (ProjectRootElement projectEle in this._projectRootElements)
+            foreach (var p in this._projectRootElements)
             {
-                yield return new ProjectLite(projectEle, this._dte);
+                string uniqName = p.Key;
+                yield return new ProjectLite(p.Value, this._projectsInSolution[uniqName], uniqName, this._dte);
             }
         }
 
