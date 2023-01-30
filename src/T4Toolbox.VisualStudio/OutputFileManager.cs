@@ -16,7 +16,7 @@ namespace T4Toolbox.VisualStudio
     using System.Text;
     using EnvDTE;
     using EnvDTE80;
-    //using Microsoft.Build.Execution;
+    using Microsoft.Build.Execution;
     using Microsoft.VisualStudio;
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.VisualStudio.TextTemplating;
