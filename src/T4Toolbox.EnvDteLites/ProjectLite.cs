@@ -95,11 +95,13 @@ namespace T4Toolbox.EnvDteLites
             }
         }
 
+        private const string _PROJECT_KIND_NORMAL = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
+
         public string Kind
         {
-            get { throw new NotImplementedException("Project.Kind"); }
-            //todo new NotImplementedException("Project.Kind")
-            //get { return this._projectRootElement.Kind; }
+            //get { throw new NotImplementedException("Project.Kind"); }
+            //todo just return a static Project.Kind?
+            get { return _PROJECT_KIND_NORMAL; }
         }
 
         public string Name
