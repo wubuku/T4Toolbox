@@ -43,7 +43,9 @@ namespace T4Toolbox.EnvDteLites
 
         public Project Item(object index)
         {
-            throw new NotImplementedException("Projects.GetEnumerator");
+            //throw new NotImplementedException("Projects.GetEnumerator");
+            var uniqName = Convert.ToString(index);
+            return new ProjectLite(_projectRootElements[uniqName], _projectsInSolution[uniqName], uniqName, this._dte);
         }
 
         public string Kind

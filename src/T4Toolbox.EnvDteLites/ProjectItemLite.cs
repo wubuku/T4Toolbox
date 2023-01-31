@@ -27,9 +27,14 @@ namespace T4Toolbox.EnvDteLites
             this._name = Path.GetFileName(projectItemElement.Include);
             this._fileNames = new string[]
             {
-                Path.Combine(Path.GetDirectoryName(containingProject.FileName),
-                    projectItemElement.Include)
+                GetProjectItemFullName(projectItemElement, containingProject)
             };
+        }
+
+        internal static string GetProjectItemFullName(ProjectItemElement projectItemElement, Project containingProject)
+        {
+            return Path.Combine(Path.GetDirectoryName(containingProject.FileName),
+                                projectItemElement.Include);
         }
 
         public ProjectItems Collection

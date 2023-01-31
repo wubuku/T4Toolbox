@@ -75,18 +75,31 @@ namespace T4Toolbox.EnvDteLites
         public ProjectItem FindProjectItem(string FileName)
         {
             //throw new NotImplementedException("Solution.FindProjectItem");
-            foreach(Project proj in this.Projects)
+            foreach(ProjectLite proj in this.Projects)
             {
-                foreach(ProjectItem projItem in proj.ProjectItems)
+                foreach (var iG in proj.ProjectRootElement.ItemGroups)
                 {
-                    if (projItem is ProjectItemLite)//todo is this FindProjectItem ok?
+                    foreach (var ie in iG.Items)
                     {
-                        if (projItem.FileCount > 0 && FileName.Equals(projItem.get_FileNames(0)))
+                        if (ProjectItemLite.GetProjectItemFullName(ie, proj).Equals(FileName))
                         {
-                            return projItem;
+                            return new ProjectItemLite(ie, proj);
                         }
                     }
                 }
+                //todo is this FindProjectItem ok?
+                return null;
+                
+                //foreach (ProjectItem projItem in proj.ProjectItems)
+                //{
+                //    if (projItem is ProjectItemLite)
+                //    {
+                //        if (projItem.FileCount > 0 && FileName.Equals(projItem.get_FileNames(0)))
+                //        {
+                //            return projItem;
+                //        }
+                //    }
+                //}
             }
             return null;
         }

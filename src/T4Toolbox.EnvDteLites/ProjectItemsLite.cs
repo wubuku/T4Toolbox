@@ -6,15 +6,15 @@ namespace T4Toolbox.EnvDteLites
 {
     public class ProjectItemsLite : ProjectItems
     {
-        private IList<ProjectItemElement> _projectItemElements;
+        //private IList<ProjectItemElement> _projectItemElements = new List<ProjectItemElement>();
 
         private Project _containingProject;
 
 
-        public ProjectItemsLite(IList<ProjectItemElement> projectItemElements, Project containingProject)
+        public ProjectItemsLite(Project containingProject)
         {
-            if (projectItemElements == null) { throw new ArgumentNullException("projectItemElements"); }
-            this._projectItemElements = projectItemElements;
+            //if (projectItemElements == null) { throw new ArgumentNullException("projectItemElements"); }
+            //this._projectItemElements = projectItemElements;
             this._containingProject = containingProject;
         }
 
@@ -51,7 +51,11 @@ namespace T4Toolbox.EnvDteLites
 
         public int Count
         {
-            get { throw new NotImplementedException("ProjectItems.Count"); }
+            get
+            {
+                //throw new NotImplementedException("ProjectItems.Count");
+                return 0;// _projectItemElements.Count;
+            }
         }
 
         public DTE DTE
@@ -63,15 +67,17 @@ namespace T4Toolbox.EnvDteLites
         public System.Collections.IEnumerator GetEnumerator()
         {
             //throw new NotImplementedException("ProjectItems.GetEnumerator");
-            foreach (ProjectItemElement projectItemEle in this._projectItemElements)
-            {
-                yield return projectItemEle == null ? null : new ProjectItemLite(projectItemEle, this._containingProject);
-            }
+            //foreach (ProjectItemElement projectItemEle in this._projectItemElements)
+            //{
+            //    yield return projectItemEle == null ? null : new ProjectItemLite(projectItemEle, this._containingProject);
+            //}
+            return new ProjectItem[0].GetEnumerator();
         }
 
         public ProjectItem Item(object index)
         {
-            throw new NotImplementedException("ProjectItems.Item");
+            //throw new NotImplementedException("ProjectItems.Item");
+            return null;
         }
 
         public string Kind

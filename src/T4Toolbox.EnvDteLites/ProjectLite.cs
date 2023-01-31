@@ -23,6 +23,11 @@ namespace T4Toolbox.EnvDteLites
         private string _fullName;
         private string _fileName;
 
+        internal ProjectRootElement ProjectRootElement
+        {
+            get { return _projectRootElement; }
+        }
+
         public ProjectLite(ProjectRootElement projectRootElement, ProjectInSolution projectInSolution, string uniqueName, DTE dte)
         {
             if (projectRootElement == null) { throw new ArgumentNullException("projectRootElement"); }
@@ -149,17 +154,10 @@ namespace T4Toolbox.EnvDteLites
             //get { throw new NotImplementedException("Project.ProjectItems"); }
             get
             {
+                //todo only project is a soluction folder, goto here
                 if (this._projectItems == null)
                 {
-                    var ieList = new List<ProjectItemElement>();
-                    foreach (var iG in this._projectRootElement.ItemGroups)
-                    {
-                        foreach (var ie in iG.Items)
-                        {
-                            ieList.Add(ie);
-                        }
-                    }
-                    this._projectItems = new ProjectItemsLite(ieList, this);
+                    this._projectItems = new ProjectItemsLite(this);
                 }
                 return this._projectItems;
             }
