@@ -16,7 +16,7 @@ namespace T4Toolbox.VisualStudio
     using System.Text;
     using EnvDTE;
     using EnvDTE80;
-    using Microsoft.Build.Execution;
+    //using Microsoft.Build.Execution;
     using Microsoft.VisualStudio;
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.VisualStudio.TextTemplating;
@@ -322,14 +322,14 @@ namespace T4Toolbox.VisualStudio
         {
             var itemTypes = new List<string> { ItemType.None, ItemType.Compile, ItemType.Content, ItemType.EmbeddedResource };
 
-            var projectInstance = new ProjectInstance(project.FullName);
-            foreach (ProjectItemInstance item in projectInstance.Items)
-            {
-                if (item.ItemType == "AvailableItemName")
-                {
-                    itemTypes.Add(item.EvaluatedInclude);
-                }
-            }
+            //var projectInstance = new ProjectInstance(project.FullName);
+            //foreach (ProjectItemInstance item in projectInstance.Items)
+            //{
+            //    if (item.ItemType == "AvailableItemName")
+            //    {
+            //        itemTypes.Add(item.EvaluatedInclude);
+            //    }
+            //}
 
             return itemTypes;
         }
