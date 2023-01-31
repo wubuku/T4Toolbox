@@ -34,7 +34,7 @@ namespace T4Toolbox.EnvDteLites
                      *   <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
                      */
                     var ps = new Dictionary<string, ProjectPropertyElement>();
-                    //todo fill active config. props
+                    //todo fill this active config. ProjectPropertyElement dict.?
 
                     var properties = new PropertiesLite(ps, _dte);
                     this._activeConfiguration = new ConfigurationLite(properties, this, _dte);

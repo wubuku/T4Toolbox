@@ -2,6 +2,7 @@
 using System;
 using Microsoft.Build.Construction;
 using VSLangProj;
+using System.Collections;
 
 namespace T4Toolbox.EnvDteLites
 {
@@ -171,7 +172,17 @@ namespace T4Toolbox.EnvDteLites
                 if (this._properties == null)
                 {
                     var ps = new Dictionary<string, ProjectPropertyElement>();
-                    //todo fill ProjectPropertyElement dict....
+                    //todo how to fill this ProjectPropertyElement dict.?
+                    foreach (var pG in this._projectRootElement.PropertyGroups)
+                    {
+                        if (String.IsNullOrWhiteSpace(pG.Condition))
+                        {
+                            foreach (var p in pG.Properties)
+                            {
+                                ps.Add(p.Name, p);
+                            }
+                        }
+                    }
                     this._properties = new PropertiesLite(ps, _dte);
                 }
                 return this._properties;
@@ -218,10 +229,26 @@ namespace T4Toolbox.EnvDteLites
         {
             get
             {
-                throw new NotImplementedException("VSProject.References");
-                //todo impl. VSProject.References
+                //throw new NotImplementedException("VSProject.References");
+                return new VsReferencesLite();
             }
-        } 
+        }
 
+    }
+
+    internal class VsReferencesLite : References
+    {
+        public Reference Add(string bstrPath)
+        {
+            //throw new NotImplementedException();
+            //todo implements References.Add method
+            return null;
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            //throw new NotImplementedException();
+            return new Reference[0].GetEnumerator();
+        }
     }
 }
