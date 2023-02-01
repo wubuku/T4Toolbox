@@ -7,6 +7,9 @@ namespace T4Toolbox.EnvDteLites
     public class ConfigurationManagerLite : ConfigurationManager
     {
         private ProjectRootElement _projectRootElement;
+
+        private Project _project;
+
         /*
         * string outDir = project.ConfigurationManager.ActiveConfiguration
         *    .Properties.Item("OutputPath").Value.ToString();
@@ -15,10 +18,11 @@ namespace T4Toolbox.EnvDteLites
 
         private DTE _dte;
 
-        public ConfigurationManagerLite(ProjectRootElement projectRootElement, DTE dte)
+        public ConfigurationManagerLite(Project project, DTE dte)
         {
-            if (projectRootElement == null) { throw new ArgumentNullException("projectRootElement"); }
-            this._projectRootElement = projectRootElement;
+            //if (projectRootElement == null) { throw new ArgumentNullException("projectRootElement"); }
+            this._projectRootElement = ((ProjectLite)project).ProjectRootElement;
+            this._project = project;
             this._dte = dte;
         }
 
@@ -32,10 +36,25 @@ namespace T4Toolbox.EnvDteLites
                     /*
                      * <PropertyGroup>
                      *   <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+                     * ...
+                     * <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Net45' ">
+                     *   <PlatformTarget>AnyCPU</PlatformTarget>
                      */
                     var ps = new Dictionary<string, ProjectPropertyElement>();
-                    //todo fill this active config. ProjectPropertyElement dict.?
-
+                    //todo how to fill this active config. ProjectPropertyElement dict.?
+                    string activeConfigValue = Convert.ToString(this._project.Properties.Item("Configuration").Value);
+                    if (activeConfigValue == null) { activeConfigValue = String.Empty; }
+                    foreach (var pG in this._projectRootElement.PropertyGroups)
+                    {
+                        if (pG.Condition.Contains(activeConfigValue))
+                        {
+                            foreach (var p in pG.Properties)
+                            {
+                                ps.Add(p.Name, p);
+                            }
+                            break;
+                        }
+                    }
                     var properties = new PropertiesLite(ps, _dte);
                     this._activeConfiguration = new ConfigurationLite(properties, this, _dte);
                 }

@@ -59,7 +59,7 @@ namespace T4Toolbox.EnvDteLites
             {
                 if (this._configurationManager == null)
                 {
-                    return new ConfigurationManagerLite(this._projectRootElement, _dte);
+                    return new ConfigurationManagerLite(this, _dte);
                 }
                 return this._configurationManager;
             }

@@ -49,8 +49,13 @@ namespace T4Toolbox.EnvDteLites
             /* 
              * string outDir = project.ConfigurationManager.ActiveConfiguration
              *     .Properties.Item("OutputPath").Value.ToString();
-             */            
-            var item = this._projectPropertyElements[Convert.ToString(index)];
+             */
+            var key = Convert.ToString(index);
+            if (!this._projectPropertyElements.ContainsKey(key))
+            {
+                return null;//Is this ok?
+            }
+            var item = this._projectPropertyElements[key];
             if (item == null)
             {
                 return null;
