@@ -115,6 +115,11 @@ namespace T4Toolbox.EnvDteLites.VsShellInterop
             throw new NotImplementedException();
         }
 
+        protected virtual int GetPropertyValue(string pszPropName, string pszConfigName, uint storage, out string pbstrPropValue)
+        {
+            throw new NotImplementedException();
+        }
+
         #region Implements IVsBuildPropertyStorage
 
         int IVsBuildPropertyStorage.GetItemAttribute(uint item, string pszAttributeName, out string pbstrAttributeValue)
@@ -125,7 +130,7 @@ namespace T4Toolbox.EnvDteLites.VsShellInterop
 
         int IVsBuildPropertyStorage.GetPropertyValue(string pszPropName, string pszConfigName, uint storage, out string pbstrPropValue)
         {
-            throw new NotImplementedException();
+            return this.GetPropertyValue(pszPropName, pszConfigName, storage, out pbstrPropValue);
         }
 
         int IVsBuildPropertyStorage.RemoveProperty(string pszPropName, string pszConfigName, uint storage)
