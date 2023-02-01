@@ -17,11 +17,11 @@ namespace T4Toolbox.VisualStudio
     /// <summary>
     /// Implements the <see cref="ITransformationContextProvider"/> service.
     /// </summary>
-    internal class TransformationContextProvider : MarshalByRefObject, ITransformationContextProvider
+    public class TransformationContextProvider : MarshalByRefObject, ITransformationContextProvider
     {
         private readonly IServiceProvider serviceProvider;
 
-        private TransformationContextProvider(IServiceProvider serviceProvider)
+        public TransformationContextProvider(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
