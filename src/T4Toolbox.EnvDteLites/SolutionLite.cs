@@ -93,9 +93,7 @@ namespace T4Toolbox.EnvDteLites
                             return new ProjectItemLite(ie, proj);
                         }
                     }
-                }                
-                return null;
-                
+                }             
                 //foreach (ProjectItem projItem in proj.ProjectItems)
                 //{
                 //    if (projItem is ProjectItemLite)
