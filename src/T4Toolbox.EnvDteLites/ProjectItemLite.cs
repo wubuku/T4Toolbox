@@ -33,8 +33,15 @@ namespace T4Toolbox.EnvDteLites
 
         internal static string GetProjectItemFullName(ProjectItemElement projectItemElement, Project containingProject)
         {
-            return Path.Combine(Path.GetDirectoryName(containingProject.FileName),
-                                projectItemElement.Include);
+            var projDir = Path.GetDirectoryName(containingProject.FileName);
+            //Console.WriteLine("proj. dir.: " + projDir); //debug
+            //Console.WriteLine("inlucded item: " + projectItemElement.Include); 
+            //var fullName = Path.Combine(projDir, projectItemElement.Include);
+            var fullName = Path.GetFullPath(
+                projectItemElement.Include.Replace("\\", Path.DirectorySeparatorChar.ToString()), //todo is this replace ok?
+                projDir);
+            //Console.WriteLine("GetProjectItemFullName: " + fullName);// for debug
+            return fullName;
         }
 
         public ProjectItems Collection

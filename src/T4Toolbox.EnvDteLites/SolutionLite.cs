@@ -75,19 +75,25 @@ namespace T4Toolbox.EnvDteLites
         public ProjectItem FindProjectItem(string FileName)
         {
             //throw new NotImplementedException("Solution.FindProjectItem");
-            foreach(ProjectLite proj in this.Projects)
+            var itemTypes = new List<string> { ItemType.None, ItemType.Compile, ItemType.Content, ItemType.EmbeddedResource };
+            //todo more AvailableItemTypes?
+            //todo find in proj. which dir. path inluding FileName's dir. first?
+            foreach (ProjectLite proj in this.Projects)
             {
                 foreach (var iG in proj.ProjectRootElement.ItemGroups)
                 {
                     foreach (var ie in iG.Items)
                     {
+                        if (!itemTypes.Contains(ie.ElementName))
+                        {
+                            continue;
+                        }
                         if (ProjectItemLite.GetProjectItemFullName(ie, proj).Equals(FileName))
                         {
                             return new ProjectItemLite(ie, proj);
                         }
                     }
-                }
-                //todo is this FindProjectItem ok?
+                }                
                 return null;
                 
                 //foreach (ProjectItem projItem in proj.ProjectItems)
@@ -148,15 +154,20 @@ namespace T4Toolbox.EnvDteLites
 
         public void Open(string FileName)
         {
+            var knownProjExtensions = new List<string> { ".csproj", ".vbproj" }; //todo more proj. types?
             //throw new NotImplementedException("Solution.Open");
             this._solutionFileFullName = FileName;
             this._solutionFile = SolutionFile.Parse(FileName);
             foreach (var proj in _solutionFile.ProjectsInOrder)
             {
-                var projRootEle = ProjectRootElement.Open(proj.AbsolutePath);
-                var uniqName = proj.RelativePath;
-                this._projectRootElements.Add(uniqName, projRootEle);
-                this._projectsInSolution.Add(uniqName, proj);
+                if (!String.IsNullOrWhiteSpace(proj.AbsolutePath)
+                    && knownProjExtensions.Contains(Path.GetExtension(proj.AbsolutePath)))
+                {
+                    var projRootEle = ProjectRootElement.Open(proj.AbsolutePath);
+                    var uniqName = proj.RelativePath;
+                    this._projectRootElements.Add(uniqName, projRootEle);
+                    this._projectsInSolution.Add(uniqName, proj);
+                }
             }
         }
 

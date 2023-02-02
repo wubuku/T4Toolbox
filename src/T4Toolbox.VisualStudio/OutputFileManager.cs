@@ -321,7 +321,7 @@ namespace T4Toolbox.VisualStudio
         private static ICollection<string> GetAvailableItemTypes(Project project)
         {
             var itemTypes = new List<string> { ItemType.None, ItemType.Compile, ItemType.Content, ItemType.EmbeddedResource };
-
+            //todo more AvailableItemTypes?
             //var projectInstance = new ProjectInstance(project.FullName);
             //foreach (ProjectItemInstance item in projectInstance.Items)
             //{
