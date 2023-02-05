@@ -4,9 +4,17 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
   <!--<Import Project="..\..\T4Toolbox.Common.props" />-->
- 
+
+   <PropertyGroup>
+    <PackageId>T4Toolbox.Lites.VisualStudio.Mono</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>Oleg Sych,Yang Jiefeng</Authors>
+    <!--<Company>your_company</Company>-->
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
@@ -19,9 +27,7 @@
   </ItemGroup>
  
   <ItemGroup>
-    <Reference Include="T4Toolbox.Lites.VisualStudio.Interfaces">
-      <HintPath>../../../../../GitHub/VisualStudioTextTransform/src/VisualStudio.Interfaces/bin/Debug/netstandard2.0/T4Toolbox.Lites.VisualStudio.Interfaces.dll</HintPath>
-    </Reference>
+    <PackageReference Include="T4Toolbox.Lites.VisualStudio.Interfaces" Version="0.0.2" />
   </ItemGroup>
 </Project>
 
