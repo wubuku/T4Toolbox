@@ -156,7 +156,7 @@ namespace T4Toolbox
         /// </remarks>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static void Cleanup()
-        {
+        {            
             // Dispose current context only if was properly initialized. 
             // Any exceptions thrown here may obscure initialization exceptions.
             var currentContext = CallContext.HostContext as TransformationContext;
@@ -297,8 +297,8 @@ namespace T4Toolbox
             }
 
             //this.Transformation.Errors.AddRange(errors);
-            var compilerErrorCollection = typeof(TextTransformation).GetProperty("Errors")
-                .GetMethod.Invoke(this.Transformation, null) as CompilerErrorCollection;
+            var compilerErrorCollection = (CompilerErrorCollection) typeof(TextTransformation).GetProperty("Errors", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetMethod.Invoke(this.Transformation, null);
             compilerErrorCollection.AddRange(errors);
         }
 

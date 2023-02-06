@@ -208,7 +208,11 @@ namespace T4Toolbox.EnvDteLites
         public string get_FileNames(short index)
         {
             //throw new NotImplementedException("ProjectItem.get_FileNames");
-            return this._fileNames[index];
+            if (index > this._fileNames.Count)
+            {
+                return this._fileNames[index];
+            }
+            return this._fileNames[0];
         }
 
         public bool get_IsOpen(string ViewKind = "{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}")

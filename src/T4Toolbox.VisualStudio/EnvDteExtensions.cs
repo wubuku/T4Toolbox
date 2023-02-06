@@ -35,7 +35,7 @@ namespace T4Toolbox.VisualStudio
         /// <summary>
         /// Gets MSBuild metadata element of the specified project item.
         /// </summary>
-        public static string GetItemAttribute(this ProjectItem projectItem, string attributeName)
+        public static string GetItemAttribute(this ProjectItem projectItem, string attributeName)//LastOutputs
         {
             IVsBuildPropertyStorage propertyStorage;
             uint projectItemId;

@@ -124,6 +124,7 @@ namespace T4Toolbox.EnvDteLites.VsShellInterop
 
         int IVsBuildPropertyStorage.GetItemAttribute(uint item, string pszAttributeName, out string pbstrAttributeValue)
         {
+            //todo just return null now?
             pbstrAttributeValue = null;
             return 0;
         }

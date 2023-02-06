@@ -431,7 +431,7 @@ namespace T4Toolbox.VisualStudio
         private void DeleteOldOutputs()
         {
             string lastOutputs = this.input.GetItemAttribute(ItemMetadata.LastOutputs);
-
+            if (lastOutputs == null) return;//todo lastOutputs can be null??
             // Delete all files recorded in the log that were not regenerated
             string[] logEntries = lastOutputs.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string line in logEntries)
@@ -752,7 +752,9 @@ namespace T4Toolbox.VisualStudio
                 // Check if the encoding was already set by the output directive and cannot be changed
                 var components = (ITextTemplatingComponents)this.serviceProvider.GetService(typeof(ITextTemplatingComponents));//service;
                 var callback = components.Callback as TextTemplatingCallback; // Callback can be provided by user code, not only by T4.
-                if (callback != null && !object.Equals(callback.OutputEncoding, output.Encoding))
+                if (callback != null
+                    && callback.OutputEncoding != null //todo is this ok?
+                    && !object.Equals(callback.OutputEncoding, output.Encoding))
                 {
                     throw new TransformationException(
                         string.Format(
