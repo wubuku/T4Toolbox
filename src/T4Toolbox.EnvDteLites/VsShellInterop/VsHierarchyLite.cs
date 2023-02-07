@@ -120,13 +120,19 @@ namespace T4Toolbox.EnvDteLites.VsShellInterop
             throw new NotImplementedException();
         }
 
+        protected virtual int GetItemAttribute(uint item, string pszAttributeName, out string pbstrAttributeValue)
+        {
+            //todo just return null now?
+            // string relativeInputFilePath = this.Context.GetMetadataValue("Link");
+            pbstrAttributeValue = null;
+            return 0;
+        }
+
         #region Implements IVsBuildPropertyStorage
 
         int IVsBuildPropertyStorage.GetItemAttribute(uint item, string pszAttributeName, out string pbstrAttributeValue)
         {
-            //todo just return null now?
-            pbstrAttributeValue = null;
-            return 0;
+            return this.GetItemAttribute(item, pszAttributeName, out pbstrAttributeValue);
         }
 
         int IVsBuildPropertyStorage.GetPropertyValue(string pszPropName, string pszConfigName, uint storage, out string pbstrPropValue)

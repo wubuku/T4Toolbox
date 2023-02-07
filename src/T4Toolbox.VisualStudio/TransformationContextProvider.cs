@@ -28,6 +28,9 @@ namespace T4Toolbox.VisualStudio
 
         string ITransformationContextProvider.GetMetadataValue(object hierarchyObject, string fileName, string metadataName)
         {
+            //
+            //string relativeInputFilePath = this.Context.GetMetadataValue("Link");
+            //
             uint fileItemId;
             var hierarchy = (IVsHierarchy)hierarchyObject;
             ErrorHandler.ThrowOnFailure(hierarchy.ParseCanonicalName(fileName, out fileItemId));
@@ -53,6 +56,9 @@ namespace T4Toolbox.VisualStudio
 
         string ITransformationContextProvider.GetPropertyValue(object hierarchy, string propertyName)
         {
+            //
+            // string projectFile = this.Context.GetPropertyValue("MSBuildProjectFullPath");
+            //
             var propertyStorage = (IVsBuildPropertyStorage)hierarchy;
 
             string propertyValue;

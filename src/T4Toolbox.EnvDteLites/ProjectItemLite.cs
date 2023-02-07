@@ -19,7 +19,15 @@ namespace T4Toolbox.EnvDteLites
 
         private Project _containingProject;
 
+        private ProjectItems _collection;
+
         public ProjectItemLite(ProjectItemElement projectItemElement, Project containingProject)
+            : this (projectItemElement, containingProject, null)
+        {
+            //
+        }
+
+        public ProjectItemLite(ProjectItemElement projectItemElement, Project containingProject, ProjectItems collection)
         {
             if (projectItemElement == null) { throw new ArgumentNullException("projectItemElement"); }
             this._projectItemElement = projectItemElement;
@@ -29,6 +37,7 @@ namespace T4Toolbox.EnvDteLites
             {
                 GetProjectItemFullName(projectItemElement, containingProject)
             };
+            this._collection = collection;
         }
 
         internal static string GetProjectItemFullName(ProjectItemElement projectItemElement, Project containingProject)
@@ -208,9 +217,10 @@ namespace T4Toolbox.EnvDteLites
         public string get_FileNames(short index)
         {
             //throw new NotImplementedException("ProjectItem.get_FileNames");
-            if (index > this._fileNames.Count)
+            // Is index from 1??
+            if (index >= 1 && index <= this._fileNames.Count)
             {
-                return this._fileNames[index];
+                return this._fileNames[index - 1];
             }
             return this._fileNames[0];
         }

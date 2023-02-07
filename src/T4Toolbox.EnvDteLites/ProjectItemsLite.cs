@@ -10,12 +10,24 @@ namespace T4Toolbox.EnvDteLites
 
         private Project _containingProject;
 
+        private IList<ProjectItem> _projectItems;
 
-        public ProjectItemsLite(Project containingProject)
+        private ProjectItem _parent;
+
+
+        public ProjectItemsLite(Project containingProject) : this(containingProject, null, null)
+        {
+            //if (projectItemElements == null) { throw new ArgumentNullException("projectItemElements"); }
+            //this._projectItemElements = projectItemElements;
+        }
+
+        public ProjectItemsLite(Project containingProject, ProjectItem parent, IList<ProjectItem> projectItems)
         {
             //if (projectItemElements == null) { throw new ArgumentNullException("projectItemElements"); }
             //this._projectItemElements = projectItemElements;
             this._containingProject = containingProject;
+            this._parent = parent;
+            this._projectItems = projectItems;
         }
 
         public ProjectItem AddFolder(string Name, string Kind = "{6BB5F8EF-4483-11D3-8BCF-00C04F8EC28C}")
@@ -54,7 +66,11 @@ namespace T4Toolbox.EnvDteLites
             get
             {
                 //throw new NotImplementedException("ProjectItems.Count");
-                return 0;// _projectItemElements.Count;
+                if (this._projectItems != null)
+                {
+                    return this._projectItems.Count;
+                }
+                return 0;
             }
         }
 
@@ -71,13 +87,25 @@ namespace T4Toolbox.EnvDteLites
             //{
             //    yield return projectItemEle == null ? null : new ProjectItemLite(projectItemEle, this._containingProject);
             //}
+            if (this._projectItems != null)
+            {
+                return this._projectItems.GetEnumerator();
+            }
             return new ProjectItem[0].GetEnumerator();
         }
 
         public ProjectItem Item(object index)
         {
             //throw new NotImplementedException("ProjectItems.Item");
-            return null;
+            if (this._projectItems != null)
+            {
+                int i = Convert.ToInt32(index);
+                if (i >= 1 && i <= this._projectItems.Count)
+                {
+                    return this._projectItems[i - 1];
+                }
+            }
+            throw new IndexOutOfRangeException("ProjectItems.Item index: " + index);
         }
 
         public string Kind
@@ -87,7 +115,13 @@ namespace T4Toolbox.EnvDteLites
 
         public object Parent
         {
-            get { throw new NotImplementedException("ProjectItems.Parent"); }
+            get
+            {
+                //throw new NotImplementedException("ProjectItems.Parent");
+                if (this._parent != null) { return this._parent; }
+
+                throw new InvalidOperationException("ProjectItems.Parent");
+            }
         }
     }
 }
