@@ -62,8 +62,8 @@ namespace T4Toolbox.VisualStudio
                 List<OutputFile> outputsToSave = this.GetOutputFilesToSave().ToList();
                 this.CheckoutFiles(outputsToSave.Select(output => this.GetFullPath(output.Path)).ToArray());
                 this.SaveOutputFiles(outputsToSave);
-                this.ConfigureOutputFiles();
-                this.RecordLastOutputs();
+                //this.ConfigureOutputFiles(); //todo this.ConfigureOutputFiles()?
+                //this.RecordLastOutputs(); //todo this.RecordLastOutputs()?
             }
             catch (TransformationException e)
             {
