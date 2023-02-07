@@ -121,15 +121,24 @@ namespace T4Toolbox.VisualStudio
             //    }
 
             //    // Finish updating the output files on the UI thread
-            //    ThreadHelper.Generic.BeginInvoke(manager.DoWork);
+            //    //ThreadHelper.Generic.BeginInvoke(manager.DoWork);
+            //    manager.DoWork();
             //};
 
             //watcher.Created += runManager;
             //watcher.Changed += runManager;
             //watcher.EnableRaisingEvents = true;
-            // //////////////////////////////////////////
 
-            manager.DoWork();//just do work?
+            // //////////////////////////////////////////
+            // Store the actual output file name
+            OutputFile defaultOutput = outputFiles.FirstOrDefault(output => string.IsNullOrEmpty(output.File));
+            if (defaultOutput != null)
+            {
+                defaultOutput.File = Path.GetFileNameWithoutExtension(inputFile) + "." + this.GetTransformationOutputExtensionFromHost();
+            }
+            manager.DoWork();
+
+            // //////////////////////////////////////////
             //todo update project files?
         }
 
