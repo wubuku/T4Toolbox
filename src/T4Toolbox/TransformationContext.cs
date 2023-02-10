@@ -297,8 +297,12 @@ namespace T4Toolbox
             }
 
             //this.Transformation.Errors.AddRange(errors);
-            var compilerErrorCollection = (CompilerErrorCollection) typeof(TextTransformation).GetProperty("Errors", BindingFlags.Instance | BindingFlags.NonPublic)
-                .GetMethod.Invoke(this.Transformation, null);
+            var errorProp = typeof(TextTransformation).GetProperty("Errors", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (errorProp == null)
+            {
+				throw new ArgumentException ("Template must have 'Errors' property");
+            }
+            var compilerErrorCollection = (CompilerErrorCollection) errorProp.GetMethod.Invoke(this.Transformation, null);
             compilerErrorCollection.AddRange(errors);
         }
 
