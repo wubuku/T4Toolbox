@@ -36,6 +36,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "T4Toolbox.VSTextTemplating"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "T4Toolbox.EnvDteLites", "src\T4Toolbox.EnvDteLites\T4Toolbox.EnvDteLites.csproj", "{6380B489-59ED-4FB3-89EC-10B2DF5774BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "T4Toolbox.ForPreprocessedTemplates", "src\T4Toolbox.ForPreprocessedTemplates\T4Toolbox.ForPreprocessedTemplates.csproj", "{19515298-79B6-4EA4-AA37-FE56F34876FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{6380B489-59ED-4FB3-89EC-10B2DF5774BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6380B489-59ED-4FB3-89EC-10B2DF5774BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6380B489-59ED-4FB3-89EC-10B2DF5774BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19515298-79B6-4EA4-AA37-FE56F34876FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19515298-79B6-4EA4-AA37-FE56F34876FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19515298-79B6-4EA4-AA37-FE56F34876FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19515298-79B6-4EA4-AA37-FE56F34876FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,5 +78,6 @@ Global
 		{1E1E9161-CBE4-4538-928C-539AA5E70153} = {3594248C-C8A9-4EAB-8E63-0914300D4ECE}
 		{34BEB6FA-4527-418B-ACF8-C80BD4F3AB9B} = {3594248C-C8A9-4EAB-8E63-0914300D4ECE}
 		{6380B489-59ED-4FB3-89EC-10B2DF5774BA} = {3594248C-C8A9-4EAB-8E63-0914300D4ECE}
+		{19515298-79B6-4EA4-AA37-FE56F34876FD} = {3594248C-C8A9-4EAB-8E63-0914300D4ECE}
 	EndGlobalSection
 EndGlobal
