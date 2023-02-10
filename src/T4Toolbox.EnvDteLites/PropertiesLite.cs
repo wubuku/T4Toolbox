@@ -51,10 +51,10 @@ namespace T4Toolbox.EnvDteLites
              *     .Properties.Item("OutputPath").Value.ToString();
              */
             var key = Convert.ToString(index);
-            if (key == "DefaultNamespace")
-            {
-                key = "RootNamespace";//replace this key?
-            }
+            // if (key == "DefaultNamespace")
+            // {
+            //     key = "RootNamespace";//replace this key?
+            // }
             if (!this._projectPropertyElements.ContainsKey(key))
             {
                 return null;//Is this ok?

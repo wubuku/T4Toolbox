@@ -147,7 +147,7 @@ namespace T4Toolbox.EnvDteLites.VsShellInterop
 
         int IVsBuildPropertyStorage.SetItemAttribute(uint item, string pszAttributeName, string pszAttributeValue)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(); //todo
         }
 
         int IVsBuildPropertyStorage.SetPropertyValue(string pszPropName, string pszConfigName, uint storage, string pszPropValue)

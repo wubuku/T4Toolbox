@@ -42,17 +42,20 @@ namespace T4Toolbox.EnvDteLites
                      */
                     var ps = new Dictionary<string, ProjectPropertyElement>();
                     //todo how to fill this active config. ProjectPropertyElement dict.?
-                    string activeConfigValue = Convert.ToString(this._project.Properties.Item("Configuration").Value);
-                    if (activeConfigValue == null) { activeConfigValue = String.Empty; }
-                    foreach (var pG in this._projectRootElement.PropertyGroups)
+                    if (this._project.Properties.Item("Configuration") != null)
                     {
-                        if (pG.Condition.Contains(activeConfigValue))
+                        string activeConfigValue = Convert.ToString(this._project.Properties.Item("Configuration").Value);
+                        if (activeConfigValue == null) { activeConfigValue = String.Empty; }
+                        foreach (var pG in this._projectRootElement.PropertyGroups)
                         {
-                            foreach (var p in pG.Properties)
+                            if (pG.Condition.Contains(activeConfigValue))
                             {
-                                ps.Add(p.Name, p);
+                                foreach (var p in pG.Properties)
+                                {
+                                    ps.Add(p.Name, p);
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                     var properties = new PropertiesLite(ps, _dte);

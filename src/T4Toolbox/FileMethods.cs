@@ -27,18 +27,26 @@ namespace T4Toolbox
         /// </returns>
         public static string GetRelativePath(string fromFile, string toFile)
         {
-            var relativePath = new StringBuilder(260);
-            if (!NativeMethods.PathRelativePathTo(relativePath, fromFile, 0, toFile, 0))
-            {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.CurrentCulture,
-                        "Cannot convert '{0}' to a path relative to the location of '{1}'.",
-                        toFile,
-                        fromFile));
-            }
+            // var relativePath = new StringBuilder(260);
+            // if (!NativeMethods.PathRelativePathTo(relativePath, fromFile, 0, toFile, 0))
+            // {
+            //     throw new ArgumentException(
+            //         string.Format(
+            //             CultureInfo.CurrentCulture,
+            //             "Cannot convert '{0}' to a path relative to the location of '{1}'.",
+            //             toFile,
+            //             fromFile));
+            // }
 
-            return relativePath.ToString();
+            // return relativePath.ToString();
+            var relativeToDir = Path.GetDirectoryName(toFile);
+            var fromDir = Path.GetDirectoryName(fromFile);
+            #if NET6_0 
+            var dirRel = Path.GetRelativePath(relativeToDir, fromDir);
+            return Path.Combine(dirRel, Path.GetFileName(fromFile));
+            #else 
+            throw new NotImplementedException("GetRelativePath()");
+            #endif
         }
     }
 }

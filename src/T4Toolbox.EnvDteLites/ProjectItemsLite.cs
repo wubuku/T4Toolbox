@@ -12,13 +12,14 @@ namespace T4Toolbox.EnvDteLites
 
         private IList<ProjectItem> _projectItems;
 
-        private ProjectItem _parent;
+        //private ProjectItem _parent;
+        private object _parent; // ProjectItem or Project?
 
 
-        public ProjectItemsLite(Project containingProject) : this(containingProject, null, null)
+        public ProjectItemsLite(Project containingProject) //: this(containingProject, null, null)
         {
-            //if (projectItemElements == null) { throw new ArgumentNullException("projectItemElements"); }
-            //this._projectItemElements = projectItemElements;
+            this._containingProject = containingProject;
+            this._parent = containingProject;
         }
 
         public ProjectItemsLite(Project containingProject, ProjectItem parent, IList<ProjectItem> projectItems)
@@ -118,9 +119,9 @@ namespace T4Toolbox.EnvDteLites
             get
             {
                 //throw new NotImplementedException("ProjectItems.Parent");
-                if (this._parent != null) { return this._parent; }
-
-                throw new InvalidOperationException("ProjectItems.Parent");
+                return _parent;
+                //if (this._parent != null) { return this._parent; }
+                //throw new InvalidOperationException("ProjectItems.Parent");
             }
         }
     }

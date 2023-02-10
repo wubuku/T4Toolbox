@@ -183,7 +183,15 @@ namespace T4Toolbox.EnvDteLites
                             }
                         }
                     }
-                    this._properties = new PropertiesLite(ps, _dte);
+                    if (ps.ContainsKey("RootNamespace") && !ps.ContainsKey("DefaultNamespace"))
+                    {
+                        ps["DefaultNamespace"] = ps["RootNamespace"];// Is this ok?
+                    }
+                    if (!ps.ContainsKey("DefaultNamespace")) 
+                    {
+                        throw new NotSupportedException("DefaultNamespace or RootNamespace is not set.");
+                    }
+                    this._properties = new PropertiesLite(ps, _dte);                 
                 }
                 return this._properties;
             }

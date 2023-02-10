@@ -21,6 +21,8 @@ namespace T4Toolbox.EnvDteLites
 
         private ProjectItems _collection;
 
+        private ProjectItems _projectItems;
+
         public ProjectItemLite(ProjectItemElement projectItemElement, Project containingProject)
             : this (projectItemElement, containingProject, null)
         {
@@ -55,7 +57,40 @@ namespace T4Toolbox.EnvDteLites
 
         public ProjectItems Collection
         {
-            get { throw new NotImplementedException("ProjectItem.Collection"); }
+            get 
+            {
+                // throw new NotImplementedException("ProjectItem.Collection"); 
+                if (_collection == null) 
+                {
+                    string parentName = null;
+                    foreach (var e in _projectItemElement.Children) 
+                    {
+                        if (e.ElementName == "DependentUpon" && (e is ProjectMetadataElement me))
+                        {
+                            parentName = me.Value;
+                            break;
+                        }
+                    }
+                    if (parentName != null)
+                    {
+                        var containingProject = (ProjectLite)_containingProject;
+                        foreach (var e in (containingProject.ProjectRootElement.Items))
+                        {
+                            var fullName = GetProjectItemFullName(e, containingProject);
+                            if (parentName == Path.GetFileName(fullName))
+                            {
+                                var parentProjectItem = new ProjectItemLite(e, containingProject);
+                                _collection = GetProjectItemsDependentUpon(parentProjectItem, containingProject);                                
+                            }
+                        }
+                    }
+                    if (_collection == null) //return empty collection?
+                    {
+                        _collection = new ProjectItemsLite(_containingProject);
+                    }
+                }
+                return _collection;
+            }
         }
 
         public ConfigurationManager ConfigurationManager
@@ -165,7 +200,39 @@ namespace T4Toolbox.EnvDteLites
 
         public ProjectItems ProjectItems
         {
-            get { throw new NotImplementedException("ProjectItem.ProjectItems"); }
+            get 
+            {
+                // throw new NotImplementedException("ProjectItem.ProjectItems"); 
+                if (this._projectItems == null)
+                {
+                    var containingProject = (ProjectLite)_containingProject;
+                    ProjectItemsLite projectItems = GetProjectItemsDependentUpon(this, containingProject);
+
+                    this._projectItems = projectItems;
+                }
+                return this._projectItems;
+            }
+        }
+
+        internal static ProjectItemsLite GetProjectItemsDependentUpon(ProjectItemLite parentProjectItem, ProjectLite containingProject)
+        {
+            var parentName = Path.GetFileName(parentProjectItem.Name.Replace("\\", Path.DirectorySeparatorChar.ToString()));
+            var projItemList = new List<ProjectItem>();
+            var projectItems = new ProjectItemsLite(containingProject, parentProjectItem, projItemList);
+            foreach (var projEle in containingProject.ProjectRootElement.Items)
+            {
+                foreach (var e in projEle.Children)
+                {
+                    if (e.ElementName == "DependentUpon" && (e is ProjectMetadataElement me))
+                    {
+                        if (me.Value == parentName)
+                        {
+                            projItemList.Add(new ProjectItemLite(projEle, containingProject, projectItems));
+                        }
+                    }
+                }
+            }
+            return projectItems;
         }
 
         public EnvDTE.Properties Properties
