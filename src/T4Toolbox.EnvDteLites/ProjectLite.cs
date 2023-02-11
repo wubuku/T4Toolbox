@@ -196,7 +196,7 @@ namespace T4Toolbox.EnvDteLites
 
         public void Save(string FileName = "")
         {
-            throw new NotImplementedException("Project.Save");
+            this._projectRootElement.Save();
         }
 
         public void SaveAs(string NewFileName)

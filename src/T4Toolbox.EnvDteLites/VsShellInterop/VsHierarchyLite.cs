@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using EnvDTE;
+using Microsoft.Build.Construction;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace T4Toolbox.EnvDteLites.VsShellInterop
@@ -56,13 +57,26 @@ namespace T4Toolbox.EnvDteLites.VsShellInterop
 
         public int ParseCanonicalName(string pszName, out uint pitemid)
         {
+            var projItemFileName = pszName.Replace("\\", Path.DirectorySeparatorChar.ToString());
             uint itemIdFrom = 100;
-            if (!_canonicalNameMap.ContainsKey(pszName))
+            if (!_canonicalNameMap.ContainsKey(projItemFileName))
             {
-                _canonicalNameMap[pszName] = (uint)(itemIdFrom + _canonicalNameMap.Count);
+                _canonicalNameMap[projItemFileName] = (uint)(itemIdFrom + _canonicalNameMap.Count);
             }
-            pitemid = _canonicalNameMap[pszName];
+            pitemid = _canonicalNameMap[projItemFileName];
             return 0;
+        }
+
+        internal string GetProjectItemFileName(uint pitemid)
+        {
+            foreach (var kv in _canonicalNameMap)
+            {
+                if (kv.Value == pitemid)
+                {
+                    return kv.Key;
+                }
+            }
+            throw new IndexOutOfRangeException("GetProjectItemFileName(uint pitemid)");
         }
 
         public int QueryClose(out int pfCanClose)
@@ -147,7 +161,36 @@ namespace T4Toolbox.EnvDteLites.VsShellInterop
 
         int IVsBuildPropertyStorage.SetItemAttribute(uint item, string pszAttributeName, string pszAttributeValue)
         {
-            throw new NotImplementedException(); //todo
+            if (pszAttributeName == "LastOutputs")
+            {
+                string projItemFileName = GetProjectItemFileName(item);
+                var projectLite = (ProjectLite) _project;
+                foreach (var projecItemGroupEle in projectLite.ProjectRootElement.ItemGroups)
+                {
+                    foreach (var projectItemEle in projecItemGroupEle.Items)
+                    {
+                        if (projItemFileName == ProjectItemLite.GetProjectItemFullName(projectItemEle, projectLite))
+                        {
+                            var pmesExists = new List<ProjectMetadataElement>();
+                            foreach (var pe in projectItemEle.Children)
+                            {
+                                if (pe.ElementName == pszAttributeName && pe is ProjectMetadataElement pme)
+                                {
+                                    pmesExists.Add(pme);
+                                    // may be duplicated?
+                                }
+                            }
+                            foreach (var pme in pmesExists)
+                            {
+                                pme.Parent.RemoveChild(pme);
+                            }
+                            projectItemEle.AddMetadata(pszAttributeName, pszAttributeValue);                            
+                            return 0;
+                        }
+                    }
+                }
+            }
+            throw new InvalidOperationException("IVsBuildPropertyStorage.SetItemAttribute");
         }
 
         int IVsBuildPropertyStorage.SetPropertyValue(string pszPropName, string pszConfigName, uint storage, string pszPropValue)

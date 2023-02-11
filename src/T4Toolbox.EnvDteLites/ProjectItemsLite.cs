@@ -38,7 +38,54 @@ namespace T4Toolbox.EnvDteLites
 
         public ProjectItem AddFromFile(string FileName)
         {
+            if (_parent is ProjectItemLite parentProjItem)
+            {
+                var parentName = Path.GetFileName(parentProjItem.Name.Replace("\\", Path.DirectorySeparatorChar.ToString()));
+                var projRootEle = ((ProjectLite)parentProjItem.ContainingProject).ProjectRootElement;
+                ProjectItemGroupElement itemGroupEleToAdd = null;
+                bool bestItemGroupEleToAdd = false;
+                foreach (var itemGroupEle in projRootEle.ItemGroups)
+                {
+                    foreach (var itemEle in itemGroupEle.Items)
+                    {
+                        foreach (var e in itemEle.Children)
+                        {
+                            if (e.ElementName == "DependentUpon" && (e is ProjectMetadataElement me))
+                            {
+                                itemGroupEleToAdd = itemGroupEle;
+                                if (me.Value == parentName)
+                                {
+                                    itemGroupEleToAdd = itemGroupEle;
+                                    bestItemGroupEleToAdd = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (bestItemGroupEleToAdd) { break; }
+                    }
+                    if (bestItemGroupEleToAdd) { break; }
+                }
+                if (itemGroupEleToAdd == null)
+                {
+                    itemGroupEleToAdd = projRootEle.AddItemGroup();
+                }
+                var relativePath = FileMethods.GetRelativePath(this._containingProject.FullName, FileName);
+                var projItemEle = itemGroupEleToAdd.AddItem(GetItemType(FileName), relativePath);
+                projItemEle.AddMetadata("DependentUpon", parentName);
+                return new ProjectItemLite(projItemEle, this._containingProject);
+            }
             throw new NotImplementedException("ProjectItems.AddFromFile");
+        }
+
+        internal static string GetItemType(string fileName)
+        {
+            //todo Is this ok?
+            string extName = Path.GetExtension(fileName);
+            if (extName == "cs")
+            {
+                return ItemType.Compile;
+            }
+            return ItemType.Content;
         }
 
         public ProjectItem AddFromFileCopy(string FilePath)
@@ -84,15 +131,15 @@ namespace T4Toolbox.EnvDteLites
                     var projItems = new List<ProjectItem>();
                     foreach (var projecItemGroupEle in parentProj.ProjectRootElement.ItemGroups)
                     {
-                        foreach (var projectItemEle in projecItemGroupEle.Items) 
+                        foreach (var projectItemEle in projecItemGroupEle.Items)
                         {
-                        var projItemLite = new ProjectItemLite(projectItemEle, this._containingProject);
-                        projItems.Add(projItemLite);
+                            var projItemLite = new ProjectItemLite(projectItemEle, this._containingProject);
+                            projItems.Add(projItemLite);
                         }
                     }
                     this._projectItems = projItems;
                 }
-                else 
+                else
                 {
                     return new ProjectItem[0].GetEnumerator(); //should not goto here?
                 }

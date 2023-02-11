@@ -37,13 +37,13 @@ namespace T4Toolbox
             //             toFile,
             //             fromFile));
             // }
-
             // return relativePath.ToString();
-            var relativeToDir = Path.GetDirectoryName(toFile);
-            var fromDir = Path.GetDirectoryName(fromFile);
+
+            var relativeTo_dir = Path.GetDirectoryName(fromFile);
+            var path_dir = Path.GetDirectoryName(toFile);
             #if NET6_0 
-            var dirRel = Path.GetRelativePath(relativeToDir, fromDir);
-            return Path.Combine(dirRel, Path.GetFileName(fromFile));
+            var relativePath_Dir = Path.GetRelativePath(relativeTo_dir, path_dir);
+            return Path.Combine(relativePath_Dir, Path.GetFileName(toFile));
             #else 
             throw new NotImplementedException("GetRelativePath()");
             #endif

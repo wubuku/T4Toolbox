@@ -16,11 +16,13 @@ namespace T4Toolbox.VisualStudio
     using System.Text;
     using EnvDTE;
     using EnvDTE80;
+    using Microsoft.Build.Construction;
     //using Microsoft.Build.Execution;
     using Microsoft.VisualStudio;
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.VisualStudio.TextTemplating;
     using Microsoft.VisualStudio.TextTemplating.VSHost;
+    using T4Toolbox.EnvDteLites;
     using VSLangProj;
 
     /// <summary>
@@ -62,8 +64,11 @@ namespace T4Toolbox.VisualStudio
                 List<OutputFile> outputsToSave = this.GetOutputFilesToSave().ToList();
                 this.CheckoutFiles(outputsToSave.Select(output => this.GetFullPath(output.Path)).ToArray());
                 this.SaveOutputFiles(outputsToSave);
-                this.ConfigureOutputFiles(); //todo this.ConfigureOutputFiles()?
-                this.RecordLastOutputs(); //todo this.RecordLastOutputs()?
+                this.ConfigureOutputFiles();
+                this.RecordLastOutputs();
+                // ///////////////////////////////////
+                SaveProjects();
+                // ///////////////////////////////////
             }
             catch (TransformationException e)
             {
@@ -74,6 +79,30 @@ namespace T4Toolbox.VisualStudio
             {
                 // Unexpected error. Log the whole thing, including its callstack.
                 this.LogError(e.ToString());
+            }
+        }
+
+        private void SaveProjects()
+        {
+            var projectsToSave = new Dictionary<string, ProjectLite>();
+            var inputItemProj = (ProjectLite)((ProjectItemLite)this.input).ContainingProject;
+            projectsToSave.Add(inputItemProj.FullName, inputItemProj);
+            foreach (var outputFile in outputFiles)
+            {                
+                if (String.IsNullOrEmpty(outputFile.Path)) { continue; }
+                ProjectItemLite outputItem = (ProjectItemLite)this.dte.Solution.FindProjectItem(
+                    Path.IsPathRooted(outputFile.Path) ? outputFile.Path 
+                    : Path.Combine(Path.GetDirectoryName(this.input.get_FileNames(1)), outputFile.Path));
+                if (outputItem == null) { continue; }
+                var projectLite = (ProjectLite)outputItem.ContainingProject;
+                if (!projectsToSave.ContainsKey(projectLite.FullName))
+                {
+                    projectsToSave.Add(projectLite.FullName, projectLite);
+                }
+            }
+            foreach (var projectLite in projectsToSave.Values)
+            {
+                projectLite.Save();
             }
         }
 
