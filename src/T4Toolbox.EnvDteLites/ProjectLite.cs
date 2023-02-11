@@ -152,10 +152,8 @@ namespace T4Toolbox.EnvDteLites
 
         public ProjectItems ProjectItems
         {
-            //get { throw new NotImplementedException("Project.ProjectItems"); }
             get
             {
-                //todo only project is a soluction folder, goto here
                 if (this._projectItems == null)
                 {
                     this._projectItems = new ProjectItemsLite(this);
@@ -166,7 +164,6 @@ namespace T4Toolbox.EnvDteLites
 
         public Properties Properties
         {
-            //get { throw new NotImplementedException("Project.Properties"); }
             get
             {
                 if (this._properties == null)

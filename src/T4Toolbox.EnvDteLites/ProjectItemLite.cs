@@ -24,9 +24,9 @@ namespace T4Toolbox.EnvDteLites
         private ProjectItems _projectItems;
 
         public ProjectItemLite(ProjectItemElement projectItemElement, Project containingProject)
-            : this (projectItemElement, containingProject, null)
+            : this (projectItemElement, containingProject, null) 
+            // Let this._collection to be lazy loaded.
         {
-            //
         }
 
         public ProjectItemLite(ProjectItemElement projectItemElement, Project containingProject, ProjectItems collection)
@@ -59,7 +59,6 @@ namespace T4Toolbox.EnvDteLites
         {
             get 
             {
-                // throw new NotImplementedException("ProjectItem.Collection"); 
                 if (_collection == null) 
                 {
                     string parentName = null;

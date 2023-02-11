@@ -6,16 +6,13 @@ namespace T4Toolbox.EnvDteLites
 {
     public class ProjectItemsLite : ProjectItems
     {
-        //private IList<ProjectItemElement> _projectItemElements = new List<ProjectItemElement>();
-
         private Project _containingProject;
 
         private IList<ProjectItem> _projectItems;
 
-        //private ProjectItem _parent;
         private object _parent; // ProjectItem or Project?
 
-
+        // Create a ProjectItems which parent is a project.
         public ProjectItemsLite(Project containingProject) //: this(containingProject, null, null)
         {
             this._containingProject = containingProject;
@@ -24,8 +21,6 @@ namespace T4Toolbox.EnvDteLites
 
         public ProjectItemsLite(Project containingProject, ProjectItem parent, IList<ProjectItem> projectItems)
         {
-            //if (projectItemElements == null) { throw new ArgumentNullException("projectItemElements"); }
-            //this._projectItemElements = projectItemElements;
             this._containingProject = containingProject;
             this._parent = parent;
             this._projectItems = projectItems;
@@ -77,27 +72,36 @@ namespace T4Toolbox.EnvDteLites
 
         public DTE DTE
         {
-            //get { throw new NotImplementedException("ProjectItems.DTE"); }
             get { return this.ContainingProject.DTE; }
         }
 
         public System.Collections.IEnumerator GetEnumerator()
         {
-            //throw new NotImplementedException("ProjectItems.GetEnumerator");
-            //foreach (ProjectItemElement projectItemEle in this._projectItemElements)
-            //{
-            //    yield return projectItemEle == null ? null : new ProjectItemLite(projectItemEle, this._containingProject);
-            //}
-            if (this._projectItems != null)
+            if (this._projectItems == null)
             {
-                return this._projectItems.GetEnumerator();
+                if (_parent is ProjectLite parentProj)
+                {
+                    var projItems = new List<ProjectItem>();
+                    foreach (var projecItemGroupEle in parentProj.ProjectRootElement.ItemGroups)
+                    {
+                        foreach (var projectItemEle in projecItemGroupEle.Items) 
+                        {
+                        var projItemLite = new ProjectItemLite(projectItemEle, this._containingProject);
+                        projItems.Add(projItemLite);
+                        }
+                    }
+                    this._projectItems = projItems;
+                }
+                else 
+                {
+                    return new ProjectItem[0].GetEnumerator(); //should not goto here?
+                }
             }
-            return new ProjectItem[0].GetEnumerator();
+            return this._projectItems.GetEnumerator();
         }
 
         public ProjectItem Item(object index)
         {
-            //throw new NotImplementedException("ProjectItems.Item");
             if (this._projectItems != null)
             {
                 int i = Convert.ToInt32(index);
@@ -118,10 +122,9 @@ namespace T4Toolbox.EnvDteLites
         {
             get
             {
-                //throw new NotImplementedException("ProjectItems.Parent");
-                return _parent;
                 //if (this._parent != null) { return this._parent; }
                 //throw new InvalidOperationException("ProjectItems.Parent");
+                return _parent;
             }
         }
     }
