@@ -120,7 +120,11 @@ namespace T4Toolbox.EnvDteLites
 
         public void Delete()
         {
-            throw new NotImplementedException("ProjectItem.Delete");
+            if (_projectItemElement == null) 
+            {
+                throw new NotImplementedException("ProjectItem.Delete");
+            }
+            _projectItemElement.Parent.RemoveChild(_projectItemElement);
         }
 
         public Document Document
