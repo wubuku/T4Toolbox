@@ -136,8 +136,26 @@ namespace T4Toolbox.EnvDteLites.VsShellInterop
 
         protected virtual int GetItemAttribute(uint item, string pszAttributeName, out string pbstrAttributeValue)
         {
-            //todo just return null now?
-            // string relativeInputFilePath = this.Context.GetMetadataValue("Link");
+            string projItemFileName = GetProjectItemFileName(item);
+            var projectLite = (ProjectLite)_project;
+            foreach (var projecItemGroupEle in projectLite.ProjectRootElement.ItemGroups)
+            {
+                foreach (var projectItemEle in projecItemGroupEle.Items)
+                {
+                    if (projItemFileName == ProjectItemLite.GetProjectItemFullName(projectItemEle, projectLite))
+                    {
+                        foreach (var pe in projectItemEle.Children)
+                        {
+                            if (pe.ElementName == pszAttributeName && pe is ProjectMetadataElement pme)
+                            {
+                                pbstrAttributeValue = pme.Value;
+                                return 0;
+                            }
+                        }
+                    }
+                }
+            }
+            //throw new InvalidOperationException("GetItemAttribute(), item: " + item + ", prjectItem file name: " + projItemFileName);
             pbstrAttributeValue = null;
             return 0;
         }
@@ -161,35 +179,35 @@ namespace T4Toolbox.EnvDteLites.VsShellInterop
 
         int IVsBuildPropertyStorage.SetItemAttribute(uint item, string pszAttributeName, string pszAttributeValue)
         {
-            if (pszAttributeName == "LastOutputs")
+            //if (pszAttributeName == "LastOutputs")
+            //{
+            string projItemFileName = GetProjectItemFileName(item);
+            var projectLite = (ProjectLite)_project;
+            foreach (var projecItemGroupEle in projectLite.ProjectRootElement.ItemGroups)
             {
-                string projItemFileName = GetProjectItemFileName(item);
-                var projectLite = (ProjectLite) _project;
-                foreach (var projecItemGroupEle in projectLite.ProjectRootElement.ItemGroups)
+                foreach (var projectItemEle in projecItemGroupEle.Items)
                 {
-                    foreach (var projectItemEle in projecItemGroupEle.Items)
+                    if (projItemFileName == ProjectItemLite.GetProjectItemFullName(projectItemEle, projectLite))
                     {
-                        if (projItemFileName == ProjectItemLite.GetProjectItemFullName(projectItemEle, projectLite))
+                        var pmesExists = new List<ProjectMetadataElement>();
+                        foreach (var pe in projectItemEle.Children)
                         {
-                            var pmesExists = new List<ProjectMetadataElement>();
-                            foreach (var pe in projectItemEle.Children)
+                            if (pe.ElementName == pszAttributeName && pe is ProjectMetadataElement pme)
                             {
-                                if (pe.ElementName == pszAttributeName && pe is ProjectMetadataElement pme)
-                                {
-                                    pmesExists.Add(pme);
-                                    // may be duplicated?
-                                }
+                                pmesExists.Add(pme);
+                                // may be duplicated?
                             }
-                            foreach (var pme in pmesExists)
-                            {
-                                pme.Parent.RemoveChild(pme);
-                            }
-                            projectItemEle.AddMetadata(pszAttributeName, pszAttributeValue);                            
-                            return 0;
                         }
+                        foreach (var pme in pmesExists)
+                        {
+                            pme.Parent.RemoveChild(pme);
+                        }
+                        projectItemEle.AddMetadata(pszAttributeName, pszAttributeValue);
+                        return 0;
                     }
                 }
             }
+            //}
             throw new InvalidOperationException("IVsBuildPropertyStorage.SetItemAttribute");
         }
 
