@@ -23,6 +23,8 @@ namespace T4Toolbox.EnvDteLites
 
         private ProjectItems _projectItems;
 
+        private Properties _properties;
+
         public ProjectItemLite(ProjectItemElement projectItemElement, Project containingProject)
             : this (projectItemElement, containingProject, null) 
             // Let this._collection to be lazy loaded.
@@ -240,7 +242,41 @@ namespace T4Toolbox.EnvDteLites
 
         public EnvDTE.Properties Properties
         {
-            get { throw new NotImplementedException("ProjectItem.Properties"); }
+            get
+            {
+                if (_properties == null) 
+                {
+                    throw new NotImplementedException("ProjectItem.Properties");
+                    //todo to support SetPropertyValue extension methods...
+
+                    //projectItem.SetPropertyValue(ProjectItemProperty.ItemType, output.ItemType);
+                    //
+                    //switch (metadata.Key)
+                    //{
+                    //case ItemMetadata.CopyToOutputDirectory:
+                    //    projectItem.SetPropertyValue(ProjectItemProperty.CopyToOutputDirectory, output.CopyToOutputDirectory);
+                    //    continue;
+                    //
+                    //case ItemMetadata.CustomToolNamespace:
+                    //    projectItem.SetPropertyValue(ProjectItemProperty.CustomToolNamespace, metadata.Value);
+                    //    continue;
+                    //
+                    //case ItemMetadata.Generator:
+                    //    projectItem.SetPropertyValue(ProjectItemProperty.CustomTool, metadata.Value);
+                    //    continue;
+                    //}
+
+                    //var ps = new Dictionary<string, ProjectMetadataElement>();
+                    //foreach (var e in _projectItemElement.Children) 
+                    //{
+                    //    if (e is ProjectMetadataElement me) 
+                    //    {
+                    //        ps.Add(me.ElementName, me);
+                    //    }
+                    //}
+                }
+                return _properties;
+            }
         }
 
         public void Remove()
