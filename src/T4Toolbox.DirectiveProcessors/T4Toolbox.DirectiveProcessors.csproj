@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <PackageId>T4Toolbox.DirectiveProcessors.Mono</PackageId>
-    <Version>0.0.2</Version>
+    <Version>0.0.3</Version>
     <Authors>Oleg Sych,Yang Jiefeng</Authors>
     <!--<Company>your_company</Company>-->
   </PropertyGroup>
