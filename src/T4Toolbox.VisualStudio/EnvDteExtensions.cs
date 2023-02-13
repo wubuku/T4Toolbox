@@ -80,14 +80,14 @@ namespace T4Toolbox.VisualStudio
         /// </exception>
         public static void SetPropertyValue(this ProjectItem projectItem, string propertyName, object propertyValue)
         {
-            Property property = projectItem.Properties.Item(propertyName);
-            if (property == null)
-            {
-                throw new TransformationException(
-                    string.Format(CultureInfo.CurrentCulture, "Property {0} is not supported for {1}", propertyName, projectItem.Name));
-            }
+            //todo Property property = projectItem.Properties.Item(propertyName);
+            //if (property == null)
+            //{
+            //    throw new TransformationException(
+            //        string.Format(CultureInfo.CurrentCulture, "Property {0} is not supported for {1}", propertyName, projectItem.Name));
+            //}
 
-            property.Value = propertyValue;
+            //property.Value = propertyValue;
         }
 
         private static void GetBuildPropertyStorage(ProjectItem projectItem, out IVsBuildPropertyStorage propertyStorage, out uint projectItemId)
