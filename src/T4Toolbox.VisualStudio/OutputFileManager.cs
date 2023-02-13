@@ -724,7 +724,7 @@ namespace T4Toolbox.VisualStudio
             else if (!Same(outputItem.Collection, collection))
             {
                 // If the output file moved from one collection to another                    
-                string backupFile = outputFilePath + ".bak";
+                string backupFile = outputFilePath + "." + Guid.NewGuid().GetHashCode() + ".bak";
                 File.Move(outputFilePath, backupFile); // Prevent unnecessary source control operations
                 outputItem.Delete(); // Remove doesn't work on "DependentUpon" items
                 File.Move(backupFile, outputFilePath);
