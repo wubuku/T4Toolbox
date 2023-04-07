@@ -1,4 +1,4 @@
-﻿// <copyright file="CSharpTemplate.cs" company="Oleg Sych">
+﻿// <copyright file="MoveTemplate.cs" company="Oleg Sych">
 //  Copyright © Oleg Sych. All Rights Reserved.
 // </copyright>
 
@@ -11,29 +11,50 @@ namespace T4Toolbox
     using System.Text;
 
     /// <summary>
-    /// Serves as a base class for templates that produce C# code.
+    /// Serves as a base class for templates that produce Move code.
     /// </summary>
-    public abstract class CSharpTemplate : ClrTemplate
+    public abstract class MoveTemplate : ClrTemplate
     {
         /// <summary>
-        /// Contains C# reserved keywords defined in MSDN documentation at <a href="http://msdn.microsoft.com/en-us/library/x53a06bb.aspx"/>.
+        /// Contains Move reserved keywords.
         /// </summary>
         private static readonly HashSet<string> ReservedKeywords = new HashSet<string>
         {
-            "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char",
-            "checked", "class", "const", "continue", "decimal", "default", "delegate", "do",
-            "double", "else", "enum", "event", "explicit", "extern", "false", "finally",
-            "fixed", "float", "for", "foreach", "goto", "if", "implicit", "in", "int",
-            "interface", "internal", "is", "lock", "long", "namespace", "new", "null",
-            "object", "operator", "out", "override", "params", "private", "protected",
-            "public", "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof",
-            "stackalloc", "static", "string", "struct", "switch", "this", "throw", "true",
-            "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort", "using",
-            "virtual", "volatile", "void", "while"
+            "key",
+            "store",
+            "drop",
+            "address",
+            "as",
+            "assert",
+            "borrow",
+            "break",
+            "const",
+            "continue",
+            "copy",
+            "else",
+            "false",
+            "fun",
+            "if",
+            "invariant",
+            "let",
+            "loop",
+            "module",
+            "move",
+            "mut",
+            "native",
+            "public",
+            "resource",
+            "return",
+            "script",
+            "self",
+            "true",
+            "struct",
+            "use",
+            "while"
         };
 
         /// <summary>
-        /// Converts a given string to a valid C# field name using camelCase notation.
+        /// Converts a given string to a valid Move field name using camelCase notation.
         /// </summary>
         /// <remarks>
         /// This method converts the first letter of the given string to lower case and calls the <see cref="Identifier"/> method to ensure that it's valid.
@@ -52,12 +73,11 @@ namespace T4Toolbox
         }
 
         /// <summary>
-        /// Converts a given string into a valid C# identifier.
+        /// Converts a given string into a valid Move identifier.
         /// </summary>
         /// <remarks>
-        /// This method is based on rules defined in <a href="http://msdn.microsoft.com/en-us/library/aa664670.aspx">C# language specification</a>. 
         /// It removes white space characters and concatenates words using camelCase notation. If the resulting string is 
-        /// a C# keyword, the the method prepends it with the @ symbol to change it into a literal C# identifier. You can override this method
+        /// a Move keyword, the the method prepends it with the _ symbol to change it. You can override this method
         /// in your template to replace the default implementation.
         /// </remarks>
         public virtual string Identifier(string name)
@@ -118,18 +138,18 @@ namespace T4Toolbox
 
             string identifier = builder.ToString();
 
-            // If identifier is a reserved C# keyword
+            // If identifier is a reserved Move keyword
             if (ReservedKeywords.Contains(identifier))
             {
                 // Convert it to literal identifer
-                return "@" + identifier;
+                return identifier + "_";
             }
 
             return identifier;
         }
 
         /// <summary>
-        /// Converts a given string to a valid C# property name using PascalCase notation.
+        /// Converts a given string to a valid Pascal Java property name using PascalCase notation.
         /// </summary>
         /// <remarks>
         /// This method converts the first letter of the given string to upper case and calls the <see cref="Identifier"/> method to ensure that it's valid.
@@ -148,7 +168,7 @@ namespace T4Toolbox
         }
 
         /// <summary>
-        /// Generates a file header for C# source files.
+        /// Generates a file header for Java source files.
         /// </summary>
         /// <remarks>
         /// Call the base implementation of this method when overriding it in your template if you want the output to include the conventional 
